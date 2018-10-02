@@ -48,14 +48,14 @@ public class BookContract {
          *
          * Type: TEXT
          */
-        public static final String SUPPLIER_NAME = "supplierName";
+        public static final String COLUMN_SUPPLIER_NAME = "supplierName";
 
         /**
          * Phone number of the supplier.
          *
          * Type: INTEGER
          */
-        public static final String SUPPLIER_PHONE_NUMBER = "supplierPhoneNumber";
+        public static final String COLUMN_SUPPLIER_PHONE_NUMBER = "supplierPhoneNumber";
 
     }
 }
