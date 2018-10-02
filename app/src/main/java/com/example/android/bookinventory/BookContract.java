@@ -53,7 +53,7 @@ public class BookContract {
         /**
          * Phone number of the supplier.
          *
-         * Type: INTEGER
+         * Type: TEXT (Too large to store in an INTEGER)
          */
         public static final String COLUMN_SUPPLIER_PHONE_NUMBER = "supplierPhoneNumber";
 
