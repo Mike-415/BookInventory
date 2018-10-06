@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Book Inventory</string>
+    <string name="action_delete_all_books">Delete All Books</string>
+    <string name="action_insert_dummy_book">Insert Dummy Book</string>
+</resources>
