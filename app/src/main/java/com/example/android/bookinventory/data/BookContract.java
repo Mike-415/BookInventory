@@ -13,7 +13,7 @@ public class BookContract {
      * The "Content authority" is the package name for the app, which is guaranteed
      * to be unique on the device.
      */
-    public static final String CONTENT_AUTHORITY = "com.example.android.pets";
+    public static final String CONTENT_AUTHORITY = "com.example.android.bookinventory";
 
     /**
      * Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
@@ -26,6 +26,9 @@ public class BookContract {
     public static final String PATH_BOOKS = "books";
 
     public static final class BookEntry implements BaseColumns{
+
+        /** The content URI to access the book data in the provider */
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_BOOKS);
 
 
         /** Name of database table for books */
