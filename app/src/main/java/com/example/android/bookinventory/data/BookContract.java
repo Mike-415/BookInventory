@@ -21,9 +21,9 @@ public class BookContract {
      */
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     /**
-     * Possible path for the entire table or individual row/s in a table
+     * Possible path for the entire table or  an individual row in a table
      */
-    public static final String PATH_PETS = "books";
+    public static final String PATH_BOOKS = "books";
 
     public static final class BookEntry implements BaseColumns{
 
