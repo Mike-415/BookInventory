@@ -12,10 +12,12 @@ public class BookProvider extends ContentProvider {
     /** Tag for the log messages */
     private static final String TAG = "BookProvider";
 
+    private BooksDbHelper dbHelper;
+
 
     @Override
     public boolean onCreate() {
-
+        dbHelper = new BooksDbHelper(getContext());
         return true;
     }
 
