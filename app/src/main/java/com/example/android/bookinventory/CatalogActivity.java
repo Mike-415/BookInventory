@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.android.bookinventory.data.BookContract;
 import com.example.android.bookinventory.data.BookContract.BookEntry;
 import com.example.android.bookinventory.data.BooksDbHelper;
 
@@ -95,7 +94,7 @@ public class CatalogActivity extends AppCompatActivity {
         ContentValues values = new ContentValues();
         //COLUMNS: _id, Product Name, Price, Quantity,
         //         Supplier Name, Supplier Phone Number
-        values.put(BookEntry.COLUMN_PRODUCT_NAME, "Man's Search For Meaning");
+        values.put(BookEntry.COLUMN_PRODUCT_NAME, "SomeBookTitle");
         values.put(BookEntry.COLUMN_PRODUCT_PRICE, 1000);
         values.put(BookEntry.COLUMN_PRODUCT_QUANTITY, 5);
         values.put(BookEntry.COLUMN_SUPPLIER_NAME, "Penguin");
