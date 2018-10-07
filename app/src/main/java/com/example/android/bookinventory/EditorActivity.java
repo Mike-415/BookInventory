@@ -1,11 +1,14 @@
 package com.example.android.bookinventory;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class EditorActivity extends AppCompatActivity {
 
@@ -34,4 +37,6 @@ public class EditorActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }

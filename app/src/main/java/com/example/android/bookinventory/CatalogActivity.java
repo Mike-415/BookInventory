@@ -3,6 +3,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -90,7 +91,7 @@ public class CatalogActivity extends AppCompatActivity {
      * Writes a book into the books database and logs the row id number
      */
     public void insertBook(){
-        SQLiteDatabase db = booksDbHelper.getWritableDatabase();
+        //SQLiteDatabase db = booksDbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         //COLUMNS: _id, Product Name, Price, Quantity,
         //         Supplier Name, Supplier Phone Number
@@ -99,8 +100,10 @@ public class CatalogActivity extends AppCompatActivity {
         values.put(BookEntry.COLUMN_PRODUCT_QUANTITY, 5);
         values.put(BookEntry.COLUMN_SUPPLIER_NAME, "Penguin");
         values.put(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER, "4155551212");
-        long newRowId = db.insert(BookEntry.TABLE_NAME, null, values);
-        Log.i(TAG, "insertBook: new book inserted.  row ID: "+newRowId);
+
+
+        Uri newUri = getContentResolver().insert(BookEntry.CONTENT_URI, values);
+        Log.i(TAG, "insertBook: new book inserted.  row ID: "+newUri.toString());
 
     }
 
