@@ -9,9 +9,12 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.android.bookinventory.data.BookContract.BookEntry;
+
+import org.w3c.dom.Text;
 
 public class BookProvider extends ContentProvider {
 
@@ -94,6 +97,8 @@ public class BookProvider extends ContentProvider {
      * for that specific row in the database.
      */
     private Uri insertBook(Uri uri, ContentValues values) {
+        //Check all values before insertion
+        validateAllValues(values);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         long id = database.insert(BookEntry.TABLE_NAME, null, values);
         // If the ID is -1, then the insertion failed. Log an error and return null.
@@ -102,6 +107,28 @@ public class BookProvider extends ContentProvider {
             return null;
         }
         return ContentUris.withAppendedId(uri, id);
+    }
+
+    private void validateAllValues(ContentValues values) {
+        String bookName = values.getAsString(BookEntry.COLUMN_PRODUCT_NAME);
+        Integer bookPrice = values.getAsInteger(BookEntry.COLUMN_PRODUCT_PRICE);
+        Integer bookQuantity = values.getAsInteger(BookEntry.COLUMN_PRODUCT_QUANTITY);
+        String supplierName = values.getAsString(BookEntry.COLUMN_SUPPLIER_NAME);
+        String supplierPhoneNumber = values.getAsString(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
+        if(bookName == null)
+            throw new IllegalArgumentException("Book name is required.");
+        if(bookPrice < 0 && bookPrice != null)
+            throw new IllegalArgumentException("Book price cannot be a negative value.  Minimum is 0.");
+        if(bookQuantity < 0 && bookQuantity != null)
+            throw new IllegalArgumentException("Book quantity cannot be a negative value.  Minimum is 0.");
+        if(supplierName == null)
+            throw new IllegalArgumentException("Supplier name is required.");
+        if(supplierPhoneNumber == null)
+            throw new IllegalArgumentException("Supplier phone number is required.");
+        if(supplierPhoneNumber.length() != 10)
+            throw new IllegalArgumentException("Supplier phone number must be 10 digits long, \n"+
+                                         "which includes both the area code and phone number");
+
     }
 
     /**
