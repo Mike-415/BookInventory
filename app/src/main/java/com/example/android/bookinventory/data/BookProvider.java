@@ -68,13 +68,8 @@ public class BookProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
-        // Get readable database
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-
-        // This cursor will hold the result of the query
         Cursor cursor;
-
-        // Figure out if the URI matcher can match the URI to a specific code
         int match = sUriMatcher.match(uri);
         switch (match) {
             case BOOKS:
@@ -124,38 +119,6 @@ public class BookProvider extends ContentProvider {
         return ContentUris.withAppendedId(uri, id);
     }
 
-    private void validateAllInsertValues(ContentValues values) {
-        String bookName = values.getAsString(BookEntry.COLUMN_BOOK_NAME);
-        Integer bookPrice = values.getAsInteger(BookEntry.COLUMN_BOOK_PRICE);
-        Integer bookQuantity = values.getAsInteger(BookEntry.COLUMN_BOOK_QUANTITY);
-        String supplierName = values.getAsString(BookEntry.COLUMN_SUPPLIER_NAME);
-        String supplierPhoneNumber = values.getAsString(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
-        validateString(bookName, BookError.BOOK_NAME.toString());
-        validateInteger(bookPrice, BookError.BOOK_PRICE.toString());
-        validateInteger(bookQuantity, BookError.BOOK_QUANTITY.toString());
-        validateString(supplierName, BookError.SUPPLIER_NAME.toString());
-        validatePhoneNumber(supplierPhoneNumber);
-    }
-
-
-
-    private void validateString(String string, String errorMessage){
-        if(string == null)
-            throw new IllegalArgumentException(errorMessage);
-    }
-
-    private void validateInteger(Integer integer, String errorMessage){
-        if(integer < 0 && integer != null)
-            throw new IllegalArgumentException(errorMessage);
-    }
-
-    private void validatePhoneNumber(String supplierPhoneNumber) {
-        validateString(supplierPhoneNumber, BookError.SUPPLIER_PHONE_NUMBER_NO_VALUE.toString());
-        if(supplierPhoneNumber.length() != 10)
-            throw new IllegalArgumentException(BookError.SUPPLIER_PHONE_NUMBER_NOT_TEN_DIGITS.toString());
-        if(!(supplierPhoneNumber.matches("^[0-9]+$")))
-            throw new IllegalArgumentException(BookError.SUPPLIER_PHONE_NON_NUMERIC.toString());
-    }
 
     /**
      * Updates the data at the given selection and selection arguments, with the new ContentValues.
@@ -185,6 +148,56 @@ public class BookProvider extends ContentProvider {
         return database.update(BookEntry.TABLE_NAME, values, selection, selectionArgs);
     }
 
+
+
+    /**
+     * Delete the data at the given selection and selection arguments.
+     */
+    @Override
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case BOOKS:
+                return database.delete(BookEntry.TABLE_NAME, selection, selectionArgs);
+            case BOOK_ID:
+                selection = BookEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return database.delete(BookEntry.TABLE_NAME, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Deletion is not supported for " + uri);
+        }
+    }
+
+    /**
+     * Returns the MIME type of data for the content URI.
+     */
+    @Override
+    public String getType(Uri uri) {
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case BOOKS:
+                return BookEntry.CONTENT_LIST_TYPE;
+            case BOOK_ID:
+                return BookEntry.CONTENT_ITEM_TYPE;
+            default:
+                throw new IllegalStateException("Unknown URI " + uri + " with match " + match);
+        }
+    }
+
+    private void validateAllInsertValues(ContentValues values) {
+        String bookName = values.getAsString(BookEntry.COLUMN_BOOK_NAME);
+        Integer bookPrice = values.getAsInteger(BookEntry.COLUMN_BOOK_PRICE);
+        Integer bookQuantity = values.getAsInteger(BookEntry.COLUMN_BOOK_QUANTITY);
+        String supplierName = values.getAsString(BookEntry.COLUMN_SUPPLIER_NAME);
+        String supplierPhoneNumber = values.getAsString(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
+        validateString(bookName, BookError.BOOK_NAME.toString());
+        validateInteger(bookPrice, BookError.BOOK_PRICE.toString());
+        validateInteger(bookQuantity, BookError.BOOK_QUANTITY.toString());
+        validateString(supplierName, BookError.SUPPLIER_NAME.toString());
+        validatePhoneNumber(supplierPhoneNumber);
+    }
+
     private void validateAllUpdateValues(ContentValues values){
         if(values.containsKey(BookEntry.COLUMN_BOOK_NAME)){
             String bookName = values.getAsString(BookEntry.COLUMN_BOOK_NAME);
@@ -211,30 +224,22 @@ public class BookProvider extends ContentProvider {
         }
     }
 
-    /**
-     * Delete the data at the given selection and selection arguments.
-     */
-    @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        final int match = sUriMatcher.match(uri);
-        switch (match) {
-            case BOOKS:
-                return database.delete(BookEntry.TABLE_NAME, selection, selectionArgs);
-            case BOOK_ID:
-                selection = BookEntry._ID + "=?";
-                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
-                return database.delete(BookEntry.TABLE_NAME, selection, selectionArgs);
-            default:
-                throw new IllegalArgumentException("Deletion is not supported for " + uri);
-        }
+
+    private void validateString(String string, String errorMessage){
+        if(string == null)
+            throw new IllegalArgumentException(errorMessage);
     }
 
-    /**
-     * Returns the MIME type of data for the content URI.
-     */
-    @Override
-    public String getType(Uri uri) {
-        return null;
+    private void validateInteger(Integer integer, String errorMessage){
+        if(integer < 0 && integer != null)
+            throw new IllegalArgumentException(errorMessage);
+    }
+
+    private void validatePhoneNumber(String supplierPhoneNumber) {
+        validateString(supplierPhoneNumber, BookError.SUPPLIER_PHONE_NUMBER_NO_VALUE.toString());
+        if(supplierPhoneNumber.length() != 10)
+            throw new IllegalArgumentException(BookError.SUPPLIER_PHONE_NUMBER_NOT_TEN_DIGITS.toString());
+        if(!(supplierPhoneNumber.matches("^[0-9]+$")))
+            throw new IllegalArgumentException(BookError.SUPPLIER_PHONE_NON_NUMERIC.toString());
     }
 }
