@@ -38,7 +38,7 @@ public class BookProvider extends ContentProvider {
         sUriMatcher.addURI(BookContract.CONTENT_AUTHORITY, BookContract.PATH_BOOKS+"/#", BOOK_ID);
     }
 
-    private enum ErrorText{
+    private enum BookError {
         BOOK_NAME("Book name is required."),
         BOOK_PRICE("Book price cannot be a negative value.  Minimum is 0."),
         BOOK_QUANTITY("Book quantity cannot be a negative value.  Minimum is 0."),
@@ -47,7 +47,7 @@ public class BookProvider extends ContentProvider {
         SUPPLIER_PHONE_NUMBER_NOT_TEN_DIGITS("Supplier phone number must be 10 digits long, \nwhich includes both the area code and phone number"),
         SUPPLIER_PHONE_NON_NUMERIC("The supplier phone number must not contain characters\n other than numbers");
         private String errorMessage;
-        ErrorText(String errorMessage){
+        BookError(String errorMessage){
             this.errorMessage = errorMessage;
         }
         @Override
@@ -130,10 +130,10 @@ public class BookProvider extends ContentProvider {
         Integer bookQuantity = values.getAsInteger(BookEntry.COLUMN_BOOK_QUANTITY);
         String supplierName = values.getAsString(BookEntry.COLUMN_SUPPLIER_NAME);
         String supplierPhoneNumber = values.getAsString(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
-        validateString(bookName, ErrorText.BOOK_NAME.toString());
-        validateInteger(bookPrice, ErrorText.BOOK_PRICE.toString());
-        validateInteger(bookQuantity, ErrorText.BOOK_QUANTITY.toString());
-        validateString(supplierName, ErrorText.SUPPLIER_NAME.toString());
+        validateString(bookName, BookError.BOOK_NAME.toString());
+        validateInteger(bookPrice, BookError.BOOK_PRICE.toString());
+        validateInteger(bookQuantity, BookError.BOOK_QUANTITY.toString());
+        validateString(supplierName, BookError.SUPPLIER_NAME.toString());
         validatePhoneNumber(supplierPhoneNumber);
     }
 
@@ -150,11 +150,11 @@ public class BookProvider extends ContentProvider {
     }
 
     private void validatePhoneNumber(String supplierPhoneNumber) {
-        validateString(supplierPhoneNumber, ErrorText.SUPPLIER_PHONE_NUMBER_NO_VALUE.toString());
+        validateString(supplierPhoneNumber, BookError.SUPPLIER_PHONE_NUMBER_NO_VALUE.toString());
         if(supplierPhoneNumber.length() != 10)
-            throw new IllegalArgumentException(ErrorText.SUPPLIER_PHONE_NUMBER_NOT_TEN_DIGITS.toString());
+            throw new IllegalArgumentException(BookError.SUPPLIER_PHONE_NUMBER_NOT_TEN_DIGITS.toString());
         if(!(supplierPhoneNumber.matches("^[0-9]+$")))
-            throw new IllegalArgumentException(ErrorText.SUPPLIER_PHONE_NON_NUMERIC.toString());
+            throw new IllegalArgumentException(BookError.SUPPLIER_PHONE_NON_NUMERIC.toString());
     }
 
     /**
@@ -188,22 +188,22 @@ public class BookProvider extends ContentProvider {
     private void validateAllUpdateValues(ContentValues values){
         if(values.containsKey(BookEntry.COLUMN_BOOK_NAME)){
             String bookName = values.getAsString(BookEntry.COLUMN_BOOK_NAME);
-            validateString(bookName, ErrorText.BOOK_NAME.toString());
+            validateString(bookName, BookError.BOOK_NAME.toString());
         }
 
         if(values.containsKey(BookEntry.COLUMN_BOOK_PRICE)){
             Integer bookPrice = values.getAsInteger(BookEntry.COLUMN_BOOK_PRICE);
-            validateInteger(bookPrice, ErrorText.BOOK_PRICE.toString());
+            validateInteger(bookPrice, BookError.BOOK_PRICE.toString());
         }
 
         if(values.containsKey(BookEntry.COLUMN_BOOK_QUANTITY)){
             Integer bookQuantity = values.getAsInteger(BookEntry.COLUMN_BOOK_QUANTITY);
-            validateInteger(bookQuantity, ErrorText.BOOK_QUANTITY.toString());
+            validateInteger(bookQuantity, BookError.BOOK_QUANTITY.toString());
         }
 
         if(values.containsKey(BookEntry.COLUMN_SUPPLIER_NAME)){
             String supplierName = values.getAsString(BookEntry.COLUMN_SUPPLIER_NAME);
-            validateString(supplierName, ErrorText.SUPPLIER_NAME.toString());
+            validateString(supplierName, BookError.SUPPLIER_NAME.toString());
         }
         if(values.containsKey(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER)){
             String supplierPhoneNumber = values.getAsString(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
@@ -216,7 +216,18 @@ public class BookProvider extends ContentProvider {
      */
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case BOOKS:
+                return database.delete(BookEntry.TABLE_NAME, selection, selectionArgs);
+            case BOOK_ID:
+                selection = BookEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return database.delete(BookEntry.TABLE_NAME, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Deletion is not supported for " + uri);
+        }
     }
 
     /**
