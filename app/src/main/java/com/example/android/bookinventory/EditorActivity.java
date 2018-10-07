@@ -65,9 +65,9 @@ public class EditorActivity extends AppCompatActivity {
         String supplierPhoneNumber = mSupplierPhoneNumber.getText().toString().trim();
 
         ContentValues values = new ContentValues();
-        values.put(BookContract.BookEntry.COLUMN_PRODUCT_NAME, bookName);
-        values.put(BookContract.BookEntry.COLUMN_PRODUCT_PRICE, bookPrice);
-        values.put(BookContract.BookEntry.COLUMN_PRODUCT_QUANTITY, bookQuantity);
+        values.put(BookContract.BookEntry.COLUMN_BOOK_NAME, bookName);
+        values.put(BookContract.BookEntry.COLUMN_BOOK_PRICE, bookPrice);
+        values.put(BookContract.BookEntry.COLUMN_BOOK_QUANTITY, bookQuantity);
         values.put(BookContract.BookEntry.COLUMN_SUPPLIER_NAME, supplierName);
         values.put(BookContract.BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER, supplierPhoneNumber);
 

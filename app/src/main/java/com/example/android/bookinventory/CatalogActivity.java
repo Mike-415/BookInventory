@@ -2,7 +2,6 @@ package com.example.android.bookinventory;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -51,9 +50,9 @@ public class CatalogActivity extends AppCompatActivity {
     private void logAllBooks() {
         String[] projection = {
                 BookEntry._ID,
-                BookEntry.COLUMN_PRODUCT_NAME,
-                BookEntry.COLUMN_PRODUCT_PRICE,
-                BookEntry.COLUMN_PRODUCT_QUANTITY,
+                BookEntry.COLUMN_BOOK_NAME,
+                BookEntry.COLUMN_BOOK_PRICE,
+                BookEntry.COLUMN_BOOK_QUANTITY,
                 BookEntry.COLUMN_SUPPLIER_NAME,
                 BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER
         };
@@ -61,9 +60,9 @@ public class CatalogActivity extends AppCompatActivity {
         Cursor cursor = getContentResolver().query(BookEntry.CONTENT_URI, projection, null, null, null);
 
         int idColumnIndex = cursor.getColumnIndex(BookEntry._ID);
-        int productNameIndex = cursor.getColumnIndex(BookEntry.COLUMN_PRODUCT_NAME);
-        int productPriceIndex = cursor.getColumnIndex(BookEntry.COLUMN_PRODUCT_PRICE);
-        int productQuantityIndex = cursor.getColumnIndex(BookEntry.COLUMN_PRODUCT_QUANTITY);
+        int productNameIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_NAME);
+        int productPriceIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_PRICE);
+        int productQuantityIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_QUANTITY);
         int supplierNameIndex = cursor.getColumnIndex(BookEntry.COLUMN_SUPPLIER_NAME);
         int supplierPhoneNumberIndex = cursor.getColumnIndex(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
 
@@ -95,9 +94,9 @@ public class CatalogActivity extends AppCompatActivity {
         ContentValues values = new ContentValues();
         //COLUMNS: _id, Product Name, Price, Quantity,
         //         Supplier Name, Supplier Phone Number
-        values.put(BookEntry.COLUMN_PRODUCT_NAME, "SomeBookTitle");
-        values.put(BookEntry.COLUMN_PRODUCT_PRICE, 1000);
-        values.put(BookEntry.COLUMN_PRODUCT_QUANTITY, 5);
+        values.put(BookEntry.COLUMN_BOOK_NAME, "SomeBookTitle");
+        values.put(BookEntry.COLUMN_BOOK_PRICE, 1000);
+        values.put(BookEntry.COLUMN_BOOK_QUANTITY, 5);
         values.put(BookEntry.COLUMN_SUPPLIER_NAME, "Penguin");
         values.put(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER, "4155551212");
 

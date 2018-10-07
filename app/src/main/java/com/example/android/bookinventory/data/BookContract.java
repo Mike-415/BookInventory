@@ -46,21 +46,21 @@ public class BookContract {
          *
          * Type: TEXT
          */
-        public static final String COLUMN_PRODUCT_NAME = "productName";
+        public static final String COLUMN_BOOK_NAME = "productName";
 
         /**
          * Price of the book.
          *
          * Type: INTEGER (cast into a 'double' later d/t varying decimal numbers)
          */
-        public static final String COLUMN_PRODUCT_PRICE = "productPrice";
+        public static final String COLUMN_BOOK_PRICE = "productPrice";
 
         /**
          * The quantity of that particular book.
          *
          * Type: INTEGER
          */
-        public static final String COLUMN_PRODUCT_QUANTITY = "productQuantity";
+        public static final String COLUMN_BOOK_QUANTITY = "productQuantity";
 
         /**
          * Name of the supplier.

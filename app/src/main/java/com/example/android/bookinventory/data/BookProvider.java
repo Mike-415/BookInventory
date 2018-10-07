@@ -9,12 +9,9 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.android.bookinventory.data.BookContract.BookEntry;
-
-import org.w3c.dom.Text;
 
 public class BookProvider extends ContentProvider {
 
@@ -39,6 +36,24 @@ public class BookProvider extends ContentProvider {
     static {
         sUriMatcher.addURI(BookContract.CONTENT_AUTHORITY, BookContract.PATH_BOOKS, BOOKS);
         sUriMatcher.addURI(BookContract.CONTENT_AUTHORITY, BookContract.PATH_BOOKS+"/#", BOOK_ID);
+    }
+
+    private enum ErrorText{
+        BOOK_NAME("Book name is required."),
+        BOOK_PRICE("Book price cannot be a negative value.  Minimum is 0."),
+        BOOK_QUANTITY("Book quantity cannot be a negative value.  Minimum is 0."),
+        SUPPLIER_NAME("Supplier name is required."),
+        SUPPLIER_PHONE_NUMBER_NO_VALUE("Supplier phone number is required."),
+        SUPPLIER_PHONE_NUMBER_NOT_TEN_DIGITS("Supplier phone number must be 10 digits long, \nwhich includes both the area code and phone number"),
+        SUPPLIER_PHONE_NON_NUMERIC("The supplier phone number must not contain characters\n other than numbers");
+        private String errorMessage;
+        ErrorText(String errorMessage){
+            this.errorMessage = errorMessage;
+        }
+        @Override
+        public String toString() {
+            return errorMessage;
+        }
     }
 
     @Override
@@ -98,7 +113,7 @@ public class BookProvider extends ContentProvider {
      */
     private Uri insertBook(Uri uri, ContentValues values) {
         //Check all values before insertion
-        validateAllValues(values);
+        validateAllInsertValues(values);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         long id = database.insert(BookEntry.TABLE_NAME, null, values);
         // If the ID is -1, then the insertion failed. Log an error and return null.
@@ -109,34 +124,91 @@ public class BookProvider extends ContentProvider {
         return ContentUris.withAppendedId(uri, id);
     }
 
-    private void validateAllValues(ContentValues values) {
-        String bookName = values.getAsString(BookEntry.COLUMN_PRODUCT_NAME);
-        Integer bookPrice = values.getAsInteger(BookEntry.COLUMN_PRODUCT_PRICE);
-        Integer bookQuantity = values.getAsInteger(BookEntry.COLUMN_PRODUCT_QUANTITY);
+    private void validateAllInsertValues(ContentValues values) {
+        String bookName = values.getAsString(BookEntry.COLUMN_BOOK_NAME);
+        Integer bookPrice = values.getAsInteger(BookEntry.COLUMN_BOOK_PRICE);
+        Integer bookQuantity = values.getAsInteger(BookEntry.COLUMN_BOOK_QUANTITY);
         String supplierName = values.getAsString(BookEntry.COLUMN_SUPPLIER_NAME);
         String supplierPhoneNumber = values.getAsString(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
-        if(bookName == null)
-            throw new IllegalArgumentException("Book name is required.");
-        if(bookPrice < 0 && bookPrice != null)
-            throw new IllegalArgumentException("Book price cannot be a negative value.  Minimum is 0.");
-        if(bookQuantity < 0 && bookQuantity != null)
-            throw new IllegalArgumentException("Book quantity cannot be a negative value.  Minimum is 0.");
-        if(supplierName == null)
-            throw new IllegalArgumentException("Supplier name is required.");
-        if(supplierPhoneNumber == null)
-            throw new IllegalArgumentException("Supplier phone number is required.");
-        if(supplierPhoneNumber.length() != 10)
-            throw new IllegalArgumentException("Supplier phone number must be 10 digits long, \n"+
-                                         "which includes both the area code and phone number");
+        validateString(bookName, ErrorText.BOOK_NAME.toString());
+        validateInteger(bookPrice, ErrorText.BOOK_PRICE.toString());
+        validateInteger(bookQuantity, ErrorText.BOOK_QUANTITY.toString());
+        validateString(supplierName, ErrorText.SUPPLIER_NAME.toString());
+        validatePhoneNumber(supplierPhoneNumber);
+    }
 
+
+
+    private void validateString(String string, String errorMessage){
+        if(string == null)
+            throw new IllegalArgumentException(errorMessage);
+    }
+
+    private void validateInteger(Integer integer, String errorMessage){
+        if(integer < 0 && integer != null)
+            throw new IllegalArgumentException(errorMessage);
+    }
+
+    private void validatePhoneNumber(String supplierPhoneNumber) {
+        validateString(supplierPhoneNumber, ErrorText.SUPPLIER_PHONE_NUMBER_NO_VALUE.toString());
+        if(supplierPhoneNumber.length() != 10)
+            throw new IllegalArgumentException(ErrorText.SUPPLIER_PHONE_NUMBER_NOT_TEN_DIGITS.toString());
+        if(!(supplierPhoneNumber.matches("^[0-9]+$")))
+            throw new IllegalArgumentException(ErrorText.SUPPLIER_PHONE_NON_NUMERIC.toString());
     }
 
     /**
      * Updates the data at the given selection and selection arguments, with the new ContentValues.
      */
-    @Override
-    public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
-        return 0;
+    public int update(Uri uri, ContentValues contentValues, String selection,
+                      String[] selectionArgs) {
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case BOOKS:
+                return updateBook(uri, contentValues, selection, selectionArgs);
+            case BOOK_ID:
+                selection = BookEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return updateBook(uri, contentValues, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Update is not supported for " + uri);
+        }
+    }
+    /**
+     * Update books in the database with the given content values. Apply the changes to the rows
+     * specified in the selection and selection arguments (which could be 0 or 1 or more books).
+     * Return the number of rows that were successfully updated.
+     */
+    private int updateBook(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        validateAllUpdateValues(values);
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        return database.update(BookEntry.TABLE_NAME, values, selection, selectionArgs);
+    }
+
+    private void validateAllUpdateValues(ContentValues values){
+        if(values.containsKey(BookEntry.COLUMN_BOOK_NAME)){
+            String bookName = values.getAsString(BookEntry.COLUMN_BOOK_NAME);
+            validateString(bookName, ErrorText.BOOK_NAME.toString());
+        }
+
+        if(values.containsKey(BookEntry.COLUMN_BOOK_PRICE)){
+            Integer bookPrice = values.getAsInteger(BookEntry.COLUMN_BOOK_PRICE);
+            validateInteger(bookPrice, ErrorText.BOOK_PRICE.toString());
+        }
+
+        if(values.containsKey(BookEntry.COLUMN_BOOK_QUANTITY)){
+            Integer bookQuantity = values.getAsInteger(BookEntry.COLUMN_BOOK_QUANTITY);
+            validateInteger(bookQuantity, ErrorText.BOOK_QUANTITY.toString());
+        }
+
+        if(values.containsKey(BookEntry.COLUMN_SUPPLIER_NAME)){
+            String supplierName = values.getAsString(BookEntry.COLUMN_SUPPLIER_NAME);
+            validateString(supplierName, ErrorText.SUPPLIER_NAME.toString());
+        }
+        if(values.containsKey(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER)){
+            String supplierPhoneNumber = values.getAsString(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
+            validatePhoneNumber(supplierPhoneNumber);
+        }
     }
 
     /**
