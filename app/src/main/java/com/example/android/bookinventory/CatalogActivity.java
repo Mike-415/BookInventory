@@ -6,12 +6,15 @@ import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 
 import com.example.android.bookinventory.data.BookContract.BookEntry;
+import com.example.android.bookinventory.data.BookCursorAdapter;
 import com.example.android.bookinventory.data.BooksDbHelper;
 
 public class CatalogActivity extends AppCompatActivity {
@@ -38,6 +41,8 @@ public class CatalogActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        insertBook();
+        insertBook();
         displayDatabaseInfo();
     }
 
@@ -55,32 +60,16 @@ public class CatalogActivity extends AppCompatActivity {
                 BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER
         };
 
-        Cursor cursor = getContentResolver().query(BookEntry.CONTENT_URI, projection, null, null, null);
+        Cursor cursor = getContentResolver().query(
+                BookEntry.CONTENT_URI,
+                projection,
+                null,
+                null,
+                null);
 
-        int idColumnIndex = cursor.getColumnIndex(BookEntry._ID);
-        int productNameIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_NAME);
-        int productPriceIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_PRICE);
-        int productQuantityIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_QUANTITY);
-        int supplierNameIndex = cursor.getColumnIndex(BookEntry.COLUMN_SUPPLIER_NAME);
-        int supplierPhoneNumberIndex = cursor.getColumnIndex(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
-
-        Log.i(TAG, "displayDatabaseInfo: \n\n\n");
-        try
-        {
-            while (cursor.moveToNext()){
-                int currentId = cursor.getInt(idColumnIndex);
-                String productName = cursor.getString(productNameIndex);
-                int productPrice = cursor.getInt(productPriceIndex);
-                int productQuantity = cursor.getInt(productQuantityIndex);
-                String supplierName = cursor.getString(supplierNameIndex);
-                String supplierPhoneNumber = cursor.getString(supplierPhoneNumberIndex);
-                Log.i(TAG, "_id: "+currentId+", productName: "+productName+", productPrice: "+productPrice+", productQuantity: "+productQuantity+", supplierName: "+supplierName+", supplierPhoneNumber: "+supplierPhoneNumber);
-            }
-        }
-        finally
-        {
-            cursor.close();
-        }
+        ListView bookRecyclerView = findViewById(R.id.listView);
+        BookCursorAdapter adapter = new BookCursorAdapter(this, cursor);
+        bookRecyclerView.setAdapter(adapter);
     }
 
 
