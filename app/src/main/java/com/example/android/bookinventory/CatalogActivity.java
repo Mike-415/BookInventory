@@ -3,10 +3,14 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,12 +19,12 @@ import android.widget.ListView;
 
 import com.example.android.bookinventory.data.BookContract.BookEntry;
 import com.example.android.bookinventory.data.BookCursorAdapter;
-import com.example.android.bookinventory.data.BooksDbHelper;
 
-public class CatalogActivity extends AppCompatActivity {
+
+public class CatalogActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "CatalogActivity";
-    private BooksDbHelper booksDbHelper;
-
+    private static final int BOOK_LOADER_ID = 1;
+    private BookCursorAdapter bookCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,51 +39,26 @@ public class CatalogActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        booksDbHelper = new BooksDbHelper(this);
+
+        ListView bookListView = (ListView) findViewById(R.id.listView);
+        View emptyView = findViewById(R.id.emptyView);
+        bookListView.setEmptyView(emptyView);
+
+        bookCursorAdapter = new BookCursorAdapter(this, null);
+        bookListView.setAdapter(bookCursorAdapter);
+
+        getSupportLoaderManager().initLoader(BOOK_LOADER_ID, null, this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-//        insertBook();
-//        insertBook();
-        displayDatabaseInfo();
     }
-
-
-    /**
-     * Reads all the rows and columns in the books database and logs them
-     */
-    private void displayDatabaseInfo() {
-        String[] projection = {
-                BookEntry._ID,
-                BookEntry.COLUMN_BOOK_NAME,
-                BookEntry.COLUMN_BOOK_PRICE,
-                BookEntry.COLUMN_BOOK_QUANTITY,
-                BookEntry.COLUMN_SUPPLIER_NAME,
-                BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER
-        };
-
-        Cursor cursor = getContentResolver().query(
-                BookEntry.CONTENT_URI,
-                projection,
-                null,
-                null,
-                null);
-
-        ListView bookListView = findViewById(R.id.listView);
-        View emptyView = findViewById(R.id.emptyView);
-        BookCursorAdapter adapter = new BookCursorAdapter(this, cursor);
-        bookListView.setAdapter(adapter);
-        bookListView.setEmptyView(emptyView);
-    }
-
 
     /**
      * Writes a book into the books database and logs the row id number
      */
     public void insertBook(){
-        //SQLiteDatabase db = booksDbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         //COLUMNS: _id, Product Name, Price, Quantity,
         //         Supplier Name, Supplier Phone Number
@@ -115,4 +94,32 @@ public class CatalogActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, @Nullable Bundle bundle) {
+        String[] projection = {
+                BookEntry._ID,
+                BookEntry.COLUMN_BOOK_NAME,
+                BookEntry.COLUMN_BOOK_PRICE,
+                BookEntry.COLUMN_BOOK_QUANTITY
+        };
+
+        return new CursorLoader(
+                this,
+                BookEntry.CONTENT_URI,
+                projection,
+                null,
+                null,
+                null );
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
+        bookCursorAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+        bookCursorAdapter.swapCursor(null);
+    }
 }
