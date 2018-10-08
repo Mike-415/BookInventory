@@ -37,7 +37,7 @@ public class BookCursorAdapter extends CursorAdapter {
         bookNameTextView.setText(bookName);
         //TODO: Cast into a real number(Look at previous work)
         bookPriceTextView.setText("$ "+bookPrice);
-        bookQuantityTextView.setText(bookQuantity);
+        bookQuantityTextView.setText(Integer.toString(bookQuantity));
 
     }
 }

@@ -41,8 +41,8 @@ public class CatalogActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        insertBook();
-        insertBook();
+//        insertBook();
+//        insertBook();
         displayDatabaseInfo();
     }
 
@@ -67,9 +67,11 @@ public class CatalogActivity extends AppCompatActivity {
                 null,
                 null);
 
-        ListView bookRecyclerView = findViewById(R.id.listView);
+        ListView bookListView = findViewById(R.id.listView);
+        View emptyView = findViewById(R.id.emptyView);
         BookCursorAdapter adapter = new BookCursorAdapter(this, cursor);
-        bookRecyclerView.setAdapter(adapter);
+        bookListView.setAdapter(adapter);
+        bookListView.setEmptyView(emptyView);
     }
 
 

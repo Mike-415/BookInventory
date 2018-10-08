@@ -10,8 +10,8 @@
     <android.support.v7.widget.CardView
         android:id="@+id/listItemCardView"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:layout_margin="16dp"
+        android:layout_height="120dp"
+        android:layout_margin="8dp"
         android:elevation="@dimen/cardview_default_elevation"
         app:cardCornerRadius="@dimen/cardview_default_radius">
 
@@ -31,7 +31,8 @@
                     android:id="@+id/bookName"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="2"
+                    android:layout_weight="3"
+                    android:lineSpacingMultiplier="0.8"
                     android:fontFamily="sans-serif-condensed"
                     android:textColor="@android:color/black"
                     android:textSize="20sp"
@@ -66,6 +67,7 @@
                         android:src="@drawable/sale_button" />
 
                     <TextView
+                        android:id="@+id/bookQuantity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
