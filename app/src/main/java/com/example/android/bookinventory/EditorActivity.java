@@ -1,6 +1,7 @@
 package com.example.android.bookinventory;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,11 +29,12 @@ public class EditorActivity extends AppCompatActivity {
         mBookQuantity = (EditText) findViewById(R.id.bookQuantity);
         mSupplierName = (EditText) findViewById(R.id.supplierName);
         mSupplierPhoneNumber = (EditText) findViewById(R.id.supplierPhoneNumber);
-
-        Uri currentBookUri = getIntent().getData();
-        setTitle((currentBookUri == null) ?
-                "Add a Book" :
-                "Edit Book");
+        Intent intent = getIntent();
+        Uri currentBookUri = intent.getData();
+        if(currentBookUri == null)
+            setTitle( getString(R.string.editor_activity_title_add_book) );
+        else
+            setTitle( getString(R.string.editor_activity_title_edit_book) );
     }
 
     @Override

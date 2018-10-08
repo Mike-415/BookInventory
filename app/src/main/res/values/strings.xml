@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name">Book Inventory</string>
+    <string name="editor_activity_title_edit_book">Edit Book</string>
+    <string name="editor_activity_title_add_book">Add a Book</string>
+
     <string name="action_delete_all_books">Delete All Books</string>
     <string name="action_insert_dummy_book">Insert Dummy Book</string>
     <string name="action_save">Save</string>
     <string name="action_delete">Delete</string>
+
     <string name="editor_insert_book_failed">Insert book failed</string>
     <string name="editor_insert_book_successful">Insert book successful</string>
 </resources>

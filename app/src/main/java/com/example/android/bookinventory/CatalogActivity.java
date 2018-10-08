@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.android.bookinventory.data.BookContract.BookEntry;
 import com.example.android.bookinventory.data.BookCursorAdapter;
@@ -33,7 +34,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
         //TODO: Use ButterKnife when finished
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,7 +43,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
             }
         });
 
-        ListView bookListView = (ListView) findViewById(R.id.listView);
+        ListView bookListView = findViewById(R.id.listView);
         View emptyView = findViewById(R.id.emptyView);
         bookListView.setEmptyView(emptyView);
 
@@ -58,6 +59,16 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
                 startActivity(intent);
             }
         });
+//        bookListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
+//                Uri currentBookUri = ContentUris.withAppendedId(BookEntry.CONTENT_URI, id);
+//                intent.setData(currentBookUri);
+//                Toast.makeText(getApplicationContext(), "Clicked on list item:"+position, Toast.LENGTH_SHORT).show();
+//                startActivity(intent);
+//            }
+//        });
         getSupportLoaderManager().initLoader(BOOK_LOADER_ID, null, this);
     }
 

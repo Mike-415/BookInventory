@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
     android:background="@color/background">
 
     <!-- The borders of the cardView were visible after adding the layout_margin attribute -->
@@ -72,12 +73,11 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="6dp"
+                        android:layout_marginLeft="12dp"
                         android:fontFamily="sans-serif-condensed"
-                        android:textAlignment="center"
                         android:textColor="@android:color/white"
                         android:textStyle="bold"
-                        tools:text="1000" />
+                        tools:text="5" />
                 </RelativeLayout>
             </RelativeLayout>
         </LinearLayout>
