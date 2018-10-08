@@ -68,7 +68,6 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         values.put(BookEntry.COLUMN_SUPPLIER_NAME, "Penguin");
         values.put(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER, "4155551212");
 
-
         Uri newUri = getContentResolver().insert(BookEntry.CONTENT_URI, values);
         Log.i(TAG, "insertBook: new book inserted.  row ID: "+newUri.toString());
 
