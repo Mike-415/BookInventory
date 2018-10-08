@@ -15,7 +15,6 @@ public class EditorActivity extends AppCompatActivity {
     private EditText mBookName;
     private EditText mBookPrice ;
     private EditText mBookQuantity ;
-
     private EditText mSupplierName;
     private EditText mSupplierPhoneNumber;
 
@@ -23,13 +22,17 @@ public class EditorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+
         mBookName = (EditText) findViewById(R.id.bookName);
         mBookPrice = (EditText) findViewById(R.id.bookPrice);
         mBookQuantity = (EditText) findViewById(R.id.bookQuantity);
-
         mSupplierName = (EditText) findViewById(R.id.supplierName);
         mSupplierPhoneNumber = (EditText) findViewById(R.id.supplierPhoneNumber);
 
+        Uri currentBookUri = getIntent().getData();
+        setTitle((currentBookUri == null) ?
+                "Add a Book" :
+                "Edit Book");
     }
 
     @Override

@@ -1,4 +1,5 @@
 package com.example.android.bookinventory;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.android.bookinventory.data.BookContract.BookEntry;
@@ -47,6 +49,15 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         bookCursorAdapter = new BookCursorAdapter(this, null);
         bookListView.setAdapter(bookCursorAdapter);
 
+        bookListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
+                Uri currentBookUri = ContentUris.withAppendedId(BookEntry.CONTENT_URI, id);
+                intent.setData(currentBookUri);
+                startActivity(intent);
+            }
+        });
         getSupportLoaderManager().initLoader(BOOK_LOADER_ID, null, this);
     }
 
