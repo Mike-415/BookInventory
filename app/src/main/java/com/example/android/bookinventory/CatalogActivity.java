@@ -38,16 +38,14 @@ public class CatalogActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        insertBook();
-        insertBook();
-        logAllBooks();
+        displayDatabaseInfo();
     }
 
 
     /**
      * Reads all the rows and columns in the books database and logs them
      */
-    private void logAllBooks() {
+    private void displayDatabaseInfo() {
         String[] projection = {
                 BookEntry._ID,
                 BookEntry.COLUMN_BOOK_NAME,
@@ -66,7 +64,7 @@ public class CatalogActivity extends AppCompatActivity {
         int supplierNameIndex = cursor.getColumnIndex(BookEntry.COLUMN_SUPPLIER_NAME);
         int supplierPhoneNumberIndex = cursor.getColumnIndex(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
 
-        Log.i(TAG, "logAllBooks: \n\n\n");
+        Log.i(TAG, "displayDatabaseInfo: \n\n\n");
         try
         {
             while (cursor.moveToNext()){
