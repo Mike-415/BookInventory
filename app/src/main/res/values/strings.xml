@@ -10,4 +10,9 @@
 
     <string name="editor_insert_book_failed">Insert book failed</string>
     <string name="editor_insert_book_successful">Insert book successful</string>
+
+    <!-- Toast message in editor when current book was successfully updated [CHAR LIMIT=NONE] -->
+    <string name="editor_update_book_successful">Book updated</string>
+    <!-- Toast message in editor when current book has failed to be updated [CHAR LIMIT=NONE] -->
+    <string name="editor_update_book_failed">Error with updating book</string>
 </resources>
