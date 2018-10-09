@@ -29,6 +29,8 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     private static final int BOOK_LOADER_ID = 1;
     private BookCursorAdapter bookCursorAdapter;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

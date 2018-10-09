@@ -15,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -25,6 +26,7 @@ import com.example.android.bookinventory.data.BookContract;
 import com.example.android.bookinventory.data.BookContract.BookEntry;
 
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+    private static final String TAG = "EditorActivity";
     private static final int EXISTING_BOOK_LOADER = 1;
     private Uri mCurrentBookUri;
     private EditText mBookName;
@@ -34,6 +36,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private EditText mSupplierPhoneNumber;
 
     private boolean mBookHasChanged = false;
+
+    private String errorToastMessage = null;
 
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         @Override
@@ -57,11 +61,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             getSupportLoaderManager().initLoader(EXISTING_BOOK_LOADER, null, EditorActivity.this);
         }
 
-        mBookName = (EditText) findViewById(R.id.bookName);
-        mBookPrice = (EditText) findViewById(R.id.bookPrice);
-        mBookQuantity = (EditText) findViewById(R.id.bookQuantity);
-        mSupplierName = (EditText) findViewById(R.id.supplierName);
-        mSupplierPhoneNumber = (EditText) findViewById(R.id.supplierPhoneNumber);
+        mBookName = findViewById(R.id.bookName);
+        mBookPrice = findViewById(R.id.bookPrice);
+        mBookQuantity = findViewById(R.id.bookQuantity);
+        mSupplierName = findViewById(R.id.supplierName);
+        mSupplierPhoneNumber = findViewById(R.id.supplierPhoneNumber);
 
         mBookName.setOnTouchListener(mTouchListener);
         mBookPrice.setOnTouchListener(mTouchListener);
@@ -81,11 +85,19 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         switch (item.getItemId()) {
             case R.id.action_save:
                 saveBook();
-                finish();
+                //errorToastMessage serves as a flag.  If null, no invalid user data input
+                Log.d(TAG, "onOptionsItemSelected: errorToastMessage is null");
+                if(TextUtils.isEmpty(errorToastMessage)){
+                    finish();
+                } else {
+                    Log.d(TAG, "onOptionsItemSelected: errorToastMessage: "+errorToastMessage);
+                    Toast.makeText(this, errorToastMessage, Toast.LENGTH_LONG).show();
+                }
                 return true;
             case R.id.action_delete:
                 return true;
-            // Respond to a click on the "Up" arrow button in the app bar
+
+                // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
                 if(!mBookHasChanged){
                     NavUtils.navigateUpFromSameTask(EditorActivity.this);
@@ -172,14 +184,20 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
          */
 
         //If the user pressed the add button and didn't fill out any of the EditText fields, exit this method
+        Log.i(TAG, "saveBook: Before calling 'allEditTextValuesNulll' method");
         if( mCurrentBookUri == null && allEditTextValuesNull(bookNameString, bookPriceString, bookQuantityString, supplierNameString, supplierPhoneNumberString)){
             return;
         }
-        String toastErrorMessage = checkValidityOfAllValues(bookNameString, bookPriceString, bookQuantityString, supplierNameString, supplierPhoneNumberString);
-        if ( ! TextUtils.isEmpty(toastErrorMessage)){
+        Log.d(TAG, "saveBook: Before calling 'checkValidityOfAllValues' ");
+        errorToastMessage = checkValidityOfAllValues(bookNameString, bookPriceString, bookQuantityString, supplierNameString, supplierPhoneNumberString);
+        Log.d(TAG, "saveBook: errorToastMessage"+"__"+errorToastMessage+"__");
+        if ( ! TextUtils.isEmpty(errorToastMessage)){
             //REMEMBER: Book quantity and book price can be zero
-            Toast.makeText(getApplicationContext(), toastErrorMessage, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), errorToastMessage, Toast.LENGTH_LONG).show();
         } else {
+            //If correct, set errorToastMessage to null, since it's used to 'finish( )' when
+            //pressing the 'save' button
+            errorToastMessage = null;
             int bookPrice = getIntegerValue(bookPriceString);
             int bookQuantity = getIntegerValue(bookQuantityString);
             ContentValues values = new ContentValues();
@@ -213,27 +231,41 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         StringBuilder builder = new StringBuilder();
         //First check all String Values not null
-        if(TextUtils.isEmpty(bookNameString))
+        if(TextUtils.isEmpty(bookNameString)){
             builder.append(BookError.BOOK_NAME_REQUIRED.toString()+"\n\n");
-        if(TextUtils.isEmpty(supplierNameString))
+        }
+
+        if(TextUtils.isEmpty(supplierNameString)){
             builder.append(BookError.SUPPLIER_NAME_REQUIRED.toString()+"\n\n");
-        if(TextUtils.isEmpty(supplierPhoneNumberString))
+        }
+
+        if(TextUtils.isEmpty(supplierPhoneNumberString)){
             builder.append(BookError.SUPPLIER_PHONE_NUMBER_REQUIRED.toString()+"\n\n");
+        }
+
 
         // Check all numeric values are greater than 0
-        if(! TextUtils.isEmpty(bookPriceString))
-            if(Integer.valueOf(bookPriceString) < 0)
+        if(!TextUtils.isEmpty(bookPriceString)){
+            if(Integer.valueOf(bookPriceString) < 0){
                 builder.append(BookError.BOOK_PRICE_MINIMUM_ZERO.toString()+"\n\n");
-        if(! TextUtils.isEmpty(bookQuantityString))
-            if(Integer.valueOf(bookQuantityString) < 0)
+            }
+        }
+        if(! TextUtils.isEmpty(bookQuantityString)){
+            if(Integer.valueOf(bookQuantityString) < 0){
                 builder.append(BookError.BOOK_QUANTITY_MINIMUM_ZERO.toString()+"\n\n");
-        if(! TextUtils.isEmpty(supplierPhoneNumberString))
-            if(Long.valueOf(supplierPhoneNumberString) < 0 )
+            }
+        }
+        if(! TextUtils.isEmpty(supplierPhoneNumberString)){
+            if(Long.valueOf(supplierPhoneNumberString) < 0 ){
                 builder.append(BookError.SUPPLIER_PHONE_NUMBER_NEGATIVE_VALUE.toString()+"\n\n");
+            }
+        }
 
         // Check phone number length
-        if(supplierPhoneNumberString.length() != 10)
+        if(supplierPhoneNumberString.length() != 10){
             builder.append(BookError.SUPPLIER_PHONE_NUMBER_NOT_TEN_DIGITS.toString()+"\n\n");
+        }
+
         return builder.toString();
     }
 
@@ -252,23 +284,34 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private void toastUpdateOrInsertionResults(ContentValues values) {
         if(mCurrentBookUri == null){
             Uri newUri = getContentResolver().insert(BookEntry.CONTENT_URI, values);
-            if (newUri == null)
-                Toast.makeText(this, getString(R.string.editor_insert_book_failed),
+            if (newUri == null){
+                String insertFailed = getString(R.string.editor_insert_book_failed);
+                Log.i(TAG, "toastUpdateOrInsertionResults: book insertion failed. String: "+insertFailed);
+                Toast.makeText(this, insertFailed,
                         Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(this, getString(R.string.editor_insert_book_successful),
+            } else {
+                String insertSuccessful = getString(R.string.editor_insert_book_successful);
+                Log.i(TAG, "toastUpdateOrInsertionResults: book insertion successful String: "+insertSuccessful);
+                Toast.makeText(this, insertSuccessful ,
                         Toast.LENGTH_SHORT).show();
+            }
         } else {
             int rowsAffected = getContentResolver().update(mCurrentBookUri,
                     values,
                     null,
                     null);
-            if(rowsAffected == 0)
-                Toast.makeText(this, getString(R.string.editor_update_book_failed),
+            if(rowsAffected == 0){
+                String updateFailed = getString(R.string.editor_update_book_failed);
+                Log.i(TAG, "toastUpdateOrInsertionResults: book update failed.  String: "+updateFailed);
+                Toast.makeText(this, updateFailed ,
                         Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(this, getString(R.string.editor_update_book_successful),
+            } else {
+                String updateSuccessful = getString(R.string.editor_update_book_successful);
+                Log.i(TAG, "toastUpdateOrInsertionResults: book update successful. String: "+updateSuccessful);
+                Toast.makeText(this, updateSuccessful ,
                         Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
 
