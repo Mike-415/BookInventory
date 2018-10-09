@@ -114,6 +114,7 @@
                     <EditText
                         android:id="@+id/bookQuantity"
                         android:layout_width="0dp"
+                        android:maxLength="4"
                         android:layout_height="match_parent"
                         android:layout_weight=".66"
                         android:inputType="number" />
@@ -198,6 +199,7 @@
                     <EditText
                         android:id="@+id/supplierPhoneNumber"
                         android:layout_width="0dp"
+                        android:maxLength="10"
                         android:layout_height="match_parent"
                         android:layout_weight="1.34"
                         android:paddingRight="16dp"

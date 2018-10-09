@@ -11,12 +11,15 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.example.android.bookinventory.data.BookContract;
 import com.example.android.bookinventory.data.BookContract.BookEntry;
+
+import org.w3c.dom.Text;
 
 
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -69,28 +72,107 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         return super.onOptionsItemSelected(item);
     }
 
+
+
+
+
+
     /**
      * Get user input from editor and save new pet into database.
      */
     private void saveBook() {
-        String bookName = mBookName.getText().toString().trim();
-        int bookPrice = Integer.parseInt(mBookPrice.getText().toString().trim());
-        int bookQuantity = Integer.parseInt(mBookQuantity.getText().toString().trim());
-        String supplierName = mSupplierName.toString().trim();
-        //TODO: IMPORTANT You need to create  a dataValidation method for all these values before insertion
-        //REMEMBER: supplierPhoneNumber is a String because there's too many digits
-        String supplierPhoneNumber = mSupplierPhoneNumber.getText().toString().trim();
+        String bookNameString = mBookName.getText().toString().trim();
+        String bookPriceString = mBookPrice.getText().toString().trim();
+        String bookQuantityString = mBookQuantity.getText().toString().trim();
+        String supplierNameString = mSupplierName.toString().trim();
+        String supplierPhoneNumberString = mSupplierPhoneNumber.getText().toString().trim();
 
-        ContentValues values = new ContentValues();
-        values.put(BookContract.BookEntry.COLUMN_BOOK_NAME, bookName);
-        values.put(BookContract.BookEntry.COLUMN_BOOK_PRICE, bookPrice);
-        values.put(BookContract.BookEntry.COLUMN_BOOK_QUANTITY, bookQuantity);
-        values.put(BookContract.BookEntry.COLUMN_SUPPLIER_NAME, supplierName);
-        values.put(BookContract.BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER, supplierPhoneNumber);
+        /*
+        Before the information is added to the table, it must be validated -
+        In particular, empty product information is not accepted.
 
-        // Show a toast message depending on whether or not the insertion or update was successful
-        toastUpdateOrInsertionResults(values);
+        If user inputs invalid product information (name, price, quantity, supplier name, supplier phone number),
+        instead of erroring out, the app includes logic to validate that no null values are accepted.
+        If a null value is inputted, add a Toast that prompts the user to input the correct information before they can continue.
+         */
+
+        //If the user pressed the add button and didn't fill out any of the EditText fields, exit this method
+        if( mCurrentBookUri == null && allEditTextValuesNull(bookNameString, bookPriceString, bookQuantityString, supplierNameString, supplierPhoneNumberString)){
+            return;
+        }
+        String toastErrorMessage = checkValidityOfAllValues(bookNameString, bookPriceString, bookQuantityString, supplierNameString, supplierPhoneNumberString);
+        if ( ! TextUtils.isEmpty(toastErrorMessage)){
+            //REMEMBER: Book quantity and book price can be zero
+            Toast.makeText(getApplicationContext(), toastErrorMessage, Toast.LENGTH_LONG).show();
+        } else {
+            int bookPrice = getIntegerValue(bookPriceString);
+            int bookQuantity = getIntegerValue(bookQuantityString);
+            ContentValues values = new ContentValues();
+            values.put(BookContract.BookEntry.COLUMN_BOOK_NAME, bookNameString);
+            values.put(BookContract.BookEntry.COLUMN_BOOK_PRICE, bookPrice);       //Remember, INTEGER
+            values.put(BookContract.BookEntry.COLUMN_BOOK_QUANTITY, bookQuantity); //Remember, INTEGER
+            values.put(BookContract.BookEntry.COLUMN_SUPPLIER_NAME, supplierNameString);
+            values.put(BookContract.BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER, supplierPhoneNumberString);
+
+            // Show a toast message depending on whether or not the insertion or update was successful
+            toastUpdateOrInsertionResults(values);
+        }
     }
+
+    private int getIntegerValue(String stringValue){
+        if(TextUtils.isEmpty(stringValue)){
+            return 0;
+        }
+        return Integer.valueOf(stringValue);
+    }
+
+
+    private String checkValidityOfAllValues(String bookNameString, String bookPriceString, String bookQuantityString, String supplierNameString, String supplierPhoneNumberString) {
+        //TODO: Make sure you have all error type in the BookError enum
+        //TODO: See if you can get an EditText without a decimal point to avoid that problem
+        //TODO: Max value of quantity is 9999, maxLength = 4
+        //TODO: Max value of price is 999.99, maxLength = 5
+
+        //TODO: Change the phone number to number, not phone
+        //Solution : android:inputType="number|none"
+
+        StringBuilder builder = new StringBuilder("Please address the following: \n\n");
+        //First check all String Values not null
+        if(TextUtils.isEmpty(bookNameString))
+            builder.append(BookError.BOOK_NAME_REQUIRED.toString()+"\n\n");
+        if(TextUtils.isEmpty(supplierNameString))
+            builder.append(BookError.SUPPLIER_NAME_REQUIRED.toString()+"\n\n");
+        if(TextUtils.isEmpty(supplierPhoneNumberString))
+            builder.append(BookError.SUPPLIER_PHONE_NUMBER_REQUIRED.toString()+"\n\n");
+
+        // Check all numeric values are greater than 0
+        if(! TextUtils.isEmpty(bookPriceString))
+            if(Integer.valueOf(bookPriceString) < 0)
+                builder.append(BookError.BOOK_PRICE_MINIMUM_ZERO.toString()+"\n\n");
+        if(! TextUtils.isEmpty(bookQuantityString))
+            if(Integer.valueOf(bookQuantityString) < 0)
+                builder.append(BookError.BOOK_QUANTITY_MINIMUM_ZERO.toString()+"\n\n");
+        if(! TextUtils.isEmpty(supplierPhoneNumberString))
+            if(Long.valueOf(supplierPhoneNumberString) < 0 )
+                builder.append(BookError.SUPPLIER_PHONE_NUMBER_NEGATIVE_VALUE.toString()+"\n\n");
+
+        // Check phone number length
+        if(supplierPhoneNumberString.length() != 10)
+            builder.append(BookError.SUPPLIER_PHONE_NUMBER_NOT_TEN_DIGITS.toString()+"\n\n");
+        return builder.toString();
+    }
+
+    private boolean allEditTextValuesNull(String bookNameString, String bookPriceString, String bookQuantityString, String supplierNameString, String supplierPhoneNumberString) {
+        return TextUtils.isEmpty(bookNameString) &&
+                TextUtils.isEmpty(bookPriceString) &&
+                TextUtils.isEmpty(bookQuantityString) &&
+                TextUtils.isEmpty(supplierNameString) &&
+                TextUtils.isEmpty(supplierPhoneNumberString);
+    }
+
+
+
+
 
     private void toastUpdateOrInsertionResults(ContentValues values) {
         if(mCurrentBookUri == null){
