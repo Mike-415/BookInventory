@@ -1,26 +1,28 @@
 package com.example.android.bookinventory;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.example.android.bookinventory.data.BookContract;
 import com.example.android.bookinventory.data.BookContract.BookEntry;
-
-import org.w3c.dom.Text;
-
 
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int EXISTING_BOOK_LOADER = 1;
@@ -31,16 +33,21 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private EditText mSupplierName;
     private EditText mSupplierPhoneNumber;
 
+    private boolean mBookHasChanged = false;
+
+    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            mBookHasChanged = true;
+            return false;
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
 
-        mBookName = (EditText) findViewById(R.id.bookName);
-        mBookPrice = (EditText) findViewById(R.id.bookPrice);
-        mBookQuantity = (EditText) findViewById(R.id.bookQuantity);
-        mSupplierName = (EditText) findViewById(R.id.supplierName);
-        mSupplierPhoneNumber = (EditText) findViewById(R.id.supplierPhoneNumber);
         Intent intent = getIntent();
         mCurrentBookUri = intent.getData();
         if(mCurrentBookUri == null){
@@ -49,6 +56,18 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             setTitle( getString(R.string.editor_activity_title_edit_book) );
             getSupportLoaderManager().initLoader(EXISTING_BOOK_LOADER, null, EditorActivity.this);
         }
+
+        mBookName = (EditText) findViewById(R.id.bookName);
+        mBookPrice = (EditText) findViewById(R.id.bookPrice);
+        mBookQuantity = (EditText) findViewById(R.id.bookQuantity);
+        mSupplierName = (EditText) findViewById(R.id.supplierName);
+        mSupplierPhoneNumber = (EditText) findViewById(R.id.supplierPhoneNumber);
+
+        mBookName.setOnTouchListener(mTouchListener);
+        mBookPrice.setOnTouchListener(mTouchListener);
+        mBookQuantity.setOnTouchListener(mTouchListener);
+        mSupplierName.setOnTouchListener(mTouchListener);
+        mSupplierPhoneNumber.setOnTouchListener(mTouchListener);
     }
 
     @Override
@@ -62,21 +81,77 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         switch (item.getItemId()) {
             case R.id.action_save:
                 saveBook();
+                finish();
                 return true;
             case R.id.action_delete:
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
-//            case android.R.id.home:
-//                return true;
+            case android.R.id.home:
+                if(!mBookHasChanged){
+                    NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                    return true;
+                }
+                DialogInterface.OnClickListener discardButtonClickListener =
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //User clicked "Discard" button, navigate to parent activity
+                                NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                            }
+                        };
+                showUnsavedChangesDialog(discardButtonClickListener);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
 
+    @Override
+    public void onBackPressed() {
+        // If the book hasn't changed,
+        // continue with handling back button press
+        if( !mBookHasChanged ){
+            super.onBackPressed();
+            return;
+        }
 
+        /*
+        Otherwise if there are unsaved changes,
+        setup a dialog to warn the user. Create
+        a click listener to handle the user confirming
+        that changes should be discarded
+         */
+        DialogInterface.OnClickListener discardButtonClickListener =
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //User clicked "Discard" button,
+                        //close the current activity
+                        finish();
+                    }
+                };
+        //Show dialog that there are unsaved changes
+        showUnsavedChangesDialog(discardButtonClickListener);
+    }
 
+    private void showUnsavedChangesDialog(DialogInterface.OnClickListener discardButtonClickListener){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.unsaved_changes_dialog_message);
+        builder.setPositiveButton(R.string.discard, discardButtonClickListener);
+        builder.setNegativeButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // User clicked the "Keep editing" button, so
+                // dismiss the dialog and continue editing the book
+                if(dialogInterface != null){
+                    dialogInterface.dismiss();
+                }
+            }
+        });
 
-
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
     /**
      * Get user input from editor and save new pet into database.
      */
@@ -136,7 +211,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         //TODO: Change the phone number to number, not phone
         //Solution : android:inputType="number|none"
 
-        StringBuilder builder = new StringBuilder("Please address the following: \n\n");
+        StringBuilder builder = new StringBuilder();
         //First check all String Values not null
         if(TextUtils.isEmpty(bookNameString))
             builder.append(BookError.BOOK_NAME_REQUIRED.toString()+"\n\n");
