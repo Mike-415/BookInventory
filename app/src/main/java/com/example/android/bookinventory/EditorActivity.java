@@ -36,7 +36,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private static final int MIN_QUANTITY = 0;
     private Uri mCurrentBookUri;
     private EditText mBookName;
-    //private EditText mBookPrice ;
     private CurrencyEditText mBookPrice;
     private EditText mBookQuantity ;
     private EditText mSupplierName;
@@ -44,9 +43,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private ImageButton mPhoneButton;
     private ImageButton mDecreaseQuantityButton;
     private ImageButton mIncreaseQuantityButton;
-
     private boolean mBookHasChanged = false;
-
     private String errorToastMessage = null;
 
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
