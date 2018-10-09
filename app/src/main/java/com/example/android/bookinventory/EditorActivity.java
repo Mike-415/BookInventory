@@ -115,9 +115,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 }
                 return true;
             case R.id.action_delete:
+                showDeleteConfirmationDialog();
                 return true;
-
-                // Respond to a click on the "Up" arrow button in the app bar
+                /** Respond to a click on the "Up" arrow button in the app bar */
             case android.R.id.home:
                 if(!mBookHasChanged){
                     NavUtils.navigateUpFromSameTask(EditorActivity.this);
@@ -135,6 +135,42 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showDeleteConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditorActivity.this);
+        builder.setMessage(R.string.delete_dialog_message);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                deleteBook();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(dialogInterface != null){
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void deleteBook() {
+        // Only perform if the delete if this is an existing pet
+        if(mCurrentBookUri != null){
+            int rowsDeleted = getContentResolver().delete(mCurrentBookUri, null, null);
+            if(rowsDeleted == 0){
+                Toast.makeText(this, getString(R.string.editor_delete_pet_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.editor_delete_pet_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+        finish();
     }
 
 
