@@ -41,6 +41,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private EditText mBookQuantity ;
     private EditText mSupplierName;
     private EditText mSupplierPhoneNumber;
+    private ImageButton mPhoneButton;
     private ImageButton mDecreaseQuantityButton;
     private ImageButton mIncreaseQuantityButton;
 
@@ -74,12 +75,29 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
 
         initializeAllEditText();
-        initializeQuantityButtons();
+        initializeAllImageButtons();
     }
 
-    private void initializeQuantityButtons() {
+    private void initializeAllImageButtons() {
+        mPhoneButton = findViewById(R.id.phone_button);
         mIncreaseQuantityButton = findViewById(R.id.increase_quantity_button);
         mDecreaseQuantityButton = findViewById(R.id.decrease_quantity_button);
+        mPhoneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mSupplierPhoneNumber.length() == 10){
+                    String phoneNumber = mSupplierPhoneNumber.getText().toString().trim();
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:"+phoneNumber));
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(EditorActivity.this,
+                            BookError.SUPPLIER_PHONE_NUMBER_NOT_TEN_DIGITS.toString(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         mIncreaseQuantityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

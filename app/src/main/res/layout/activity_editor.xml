@@ -209,6 +209,7 @@
                         android:paddingRight="16dp"
                         android:inputType="phone" />
                     <ImageButton
+                        android:id="@+id/phone_button"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight=".66"
