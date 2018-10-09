@@ -56,6 +56,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mCurrentBookUri = intent.getData();
         if(mCurrentBookUri == null){
             setTitle( getString(R.string.editor_activity_title_add_book) );
+            //This method makes the delete menu option disappear, since
+            //Book never existed in the first place
+            invalidateOptionsMenu();
         } else{
             setTitle( getString(R.string.editor_activity_title_edit_book) );
             getSupportLoaderManager().initLoader(EXISTING_BOOK_LOADER, null, EditorActivity.this);
@@ -77,6 +80,23 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_editor, menu);
+        return true;
+    }
+
+    /**
+     * This method is called after calling 'invalidateOptionsMenu( )'
+     * In order to make the save menu button visible
+     * and the delete menu button invisible
+     */
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        //If we're inserting a new Book, hide the delete menu button
+        if(mCurrentBookUri == null){
+            MenuItem deleteMenuItem = menu.findItem(R.id.action_delete);
+            deleteMenuItem.setVisible(false);
+        }
         return true;
     }
 
