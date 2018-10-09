@@ -24,13 +24,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.example.android.bookinventory.data.BookContract;
 import com.example.android.bookinventory.data.BookContract.BookEntry;
+import com.example.android.bookinventory.data.BookError;
+
+import faranjit.currency.edittext.CurrencyEditText;
 
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "EditorActivity";
     private static final int EXISTING_BOOK_LOADER = 1;
     private Uri mCurrentBookUri;
     private EditText mBookName;
-    private EditText mBookPrice ;
+    //private EditText mBookPrice ;
+    private CurrencyEditText mBookPrice;
     private EditText mBookQuantity ;
     private EditText mSupplierName;
     private EditText mSupplierPhoneNumber;
@@ -225,10 +229,12 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
      */
     private void saveBook() {
         String bookNameString = mBookName.getText().toString().trim();
-        String bookPriceString = mBookPrice.getText().toString().trim();
+        //Remove periods and comma's before dataValidation
+        String bookPriceString = removeAllSymbols(mBookPrice.getText().toString().trim());
         String bookQuantityString = mBookQuantity.getText().toString().trim();
         String supplierNameString = mSupplierName.getText().toString().trim();
         String supplierPhoneNumberString = mSupplierPhoneNumber.getText().toString().trim();
+
 
         /*
         Before the information is added to the table, it must be validated -
@@ -262,6 +268,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Show a toast message depending on whether or not the insertion or update was successful
             toastUpdateOrInsertionResults(values);
         }
+    }
+
+    private String removeAllSymbols(String bookPriceString) {
+        return bookPriceString.replaceAll("[^0-9]", "");
     }
 
     private String checkValidityOfAllValues(String bookNameString, String bookPriceString, String bookQuantityString, String supplierNameString, String supplierPhoneNumberString) {

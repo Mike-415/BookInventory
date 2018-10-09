@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.example.android.bookinventory.R;
 import com.example.android.bookinventory.data.BookContract.BookEntry;
 
+import java.util.Locale;
+
 public class BookCursorAdapter extends CursorAdapter {
 
 
@@ -29,14 +31,12 @@ public class BookCursorAdapter extends CursorAdapter {
         TextView bookNameTextView = (TextView) view.findViewById(R.id.bookName);
         TextView bookPriceTextView = (TextView) view.findViewById(R.id.bookPrice);
         TextView bookQuantityTextView = (TextView) view.findViewById(R.id.bookQuantity);
-
         String bookName = cursor.getString(cursor.getColumnIndex(BookEntry.COLUMN_BOOK_NAME));
         int bookPrice = cursor.getInt(cursor.getColumnIndex(BookEntry.COLUMN_BOOK_PRICE));
+        double bookPriceDouble = bookPrice * .01;
         int bookQuantity = cursor.getInt(cursor.getColumnIndex(BookEntry.COLUMN_BOOK_QUANTITY));
-
         bookNameTextView.setText(bookName);
-        //TODO: Cast into a real number(Look at previous work)
-        bookPriceTextView.setText("$ "+bookPrice);
+        bookPriceTextView.setText("$ "+String.format("%.2f", bookPriceDouble));
         bookQuantityTextView.setText(Integer.toString(bookQuantity));
 
     }

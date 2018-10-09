@@ -79,13 +79,22 @@
                         android:gravity="center_vertical"
                         android:text="Price: "
                         android:textSize="16sp" />
-
+                    <!--
                     <EditText
                         android:id="@+id/bookPrice"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:inputType="number" />
+                       -->
+                    <faranjit.currency.edittext.CurrencyEditText
+                        android:id="@+id/bookPrice"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        app:showSymbol="true"
+                        android:inputType="number"
+                        app:locale="en_US"/>
                 </LinearLayout>
 
                 <LinearLayout

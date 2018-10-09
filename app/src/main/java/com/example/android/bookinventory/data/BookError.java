@@ -1,4 +1,4 @@
-package com.example.android.bookinventory;
+package com.example.android.bookinventory.data;
 
 public enum BookError {
     BOOK_NAME_REQUIRED("Book name is required."),
