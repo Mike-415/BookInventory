@@ -35,4 +35,6 @@
     <string name="delete">Delete</string>
     <!-- Dialog button text for the option to cancel deletion of the current book [CHAR LIMIT=20] -->
     <string name="cancel">Cancel</string>
+    <string name="editor_quantity_too_high">The maximum quantity is 9,999</string>
+    <string name="editor_quantity_too_low">The minimum quantity is 0</string>
 </resources>

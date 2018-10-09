@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import com.example.android.bookinventory.data.BookContract;
 import com.example.android.bookinventory.data.BookContract.BookEntry;
@@ -31,6 +32,8 @@ import faranjit.currency.edittext.CurrencyEditText;
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "EditorActivity";
     private static final int EXISTING_BOOK_LOADER = 1;
+    private static final int MAX_QUANTITY = 9999;
+    private static final int MIN_QUANTITY = 0;
     private Uri mCurrentBookUri;
     private EditText mBookName;
     //private EditText mBookPrice ;
@@ -38,6 +41,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private EditText mBookQuantity ;
     private EditText mSupplierName;
     private EditText mSupplierPhoneNumber;
+    private ImageButton mDecreaseQuantityButton;
+    private ImageButton mIncreaseQuantityButton;
 
     private boolean mBookHasChanged = false;
 
@@ -68,6 +73,46 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             getSupportLoaderManager().initLoader(EXISTING_BOOK_LOADER, null, EditorActivity.this);
         }
 
+        initializeAllEditText();
+        initializeQuantityButtons();
+    }
+
+    private void initializeQuantityButtons() {
+        mIncreaseQuantityButton = findViewById(R.id.increase_quantity_button);
+        mDecreaseQuantityButton = findViewById(R.id.decrease_quantity_button);
+        mIncreaseQuantityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Integer value = Integer.valueOf(mBookQuantity.getText().toString().trim());
+                if(value < MAX_QUANTITY){
+                    String incrementedValue = String.valueOf(++value);
+                    mBookQuantity.setText(incrementedValue);
+                } else {
+                    Toast.makeText(EditorActivity.this,
+                            getString(R.string.editor_quantity_too_high), Toast.LENGTH_SHORT).show();
+                    String maxValue = String.valueOf(MAX_QUANTITY);
+                    mBookQuantity.setText(maxValue);
+                }
+            }
+        });
+        mDecreaseQuantityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Integer value = Integer.valueOf(mBookQuantity.getText().toString().trim());
+                if(value > MIN_QUANTITY){
+                    String decrementedValue = String.valueOf(--value);
+                    mBookQuantity.setText(decrementedValue);
+                } else {
+                    Toast.makeText(EditorActivity.this,
+                            getString(R.string.editor_quantity_too_low), Toast.LENGTH_SHORT).show();
+                    String minValue = String.valueOf(MIN_QUANTITY);
+                    mBookQuantity.setText(minValue);
+                }
+            }
+        });
+    }
+
+    private void initializeAllEditText() {
         mBookName = findViewById(R.id.bookName);
         mBookPrice = findViewById(R.id.bookPrice);
         mBookQuantity = findViewById(R.id.bookQuantity);
@@ -79,6 +124,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mBookQuantity.setOnTouchListener(mTouchListener);
         mSupplierName.setOnTouchListener(mTouchListener);
         mSupplierPhoneNumber.setOnTouchListener(mTouchListener);
+
+        if(mCurrentBookUri == null){
+            mBookQuantity.setText("1");
+        }
     }
 
     @Override
