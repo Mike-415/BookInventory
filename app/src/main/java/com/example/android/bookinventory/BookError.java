@@ -2,7 +2,9 @@ package com.example.android.bookinventory;
 
 public enum BookError {
     BOOK_NAME_REQUIRED("Book name is required."),
+    BOOK_PRICE_REQUIRED("Book price is required"),
     BOOK_PRICE_MINIMUM_ZERO("Book price cannot be a negative value.  Minimum is 0."),
+    BOOK_QUANTITY_REQUIRED("Book quantity is required"),
     BOOK_QUANTITY_MINIMUM_ZERO("Book quantity cannot be a negative value.  Minimum is 0."),
     SUPPLIER_NAME_REQUIRED("Supplier name is required."),
     SUPPLIER_PHONE_NUMBER_REQUIRED("Supplier phone number is required."),

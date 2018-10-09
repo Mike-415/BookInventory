@@ -171,7 +171,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         String bookNameString = mBookName.getText().toString().trim();
         String bookPriceString = mBookPrice.getText().toString().trim();
         String bookQuantityString = mBookQuantity.getText().toString().trim();
-        String supplierNameString = mSupplierName.toString().trim();
+        String supplierNameString = mSupplierName.getText().toString().trim();
         String supplierPhoneNumberString = mSupplierPhoneNumber.getText().toString().trim();
 
         /*
@@ -191,15 +191,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         Log.d(TAG, "saveBook: Before calling 'checkValidityOfAllValues' ");
         errorToastMessage = checkValidityOfAllValues(bookNameString, bookPriceString, bookQuantityString, supplierNameString, supplierPhoneNumberString);
         Log.d(TAG, "saveBook: errorToastMessage"+"__"+errorToastMessage+"__");
-        if ( ! TextUtils.isEmpty(errorToastMessage)){
-            //REMEMBER: Book quantity and book price can be zero
+        if ( ! TextUtils.isEmpty(errorToastMessage)) {
             Toast.makeText(getApplicationContext(), errorToastMessage, Toast.LENGTH_LONG).show();
         } else {
-            //If correct, set errorToastMessage to null, since it's used to 'finish( )' when
-            //pressing the 'save' button
-            errorToastMessage = null;
-            int bookPrice = getIntegerValue(bookPriceString);
-            int bookQuantity = getIntegerValue(bookQuantityString);
+            int bookPrice = Integer.valueOf(bookPriceString);
+            int bookQuantity = Integer.valueOf(bookQuantityString);
             ContentValues values = new ContentValues();
             values.put(BookContract.BookEntry.COLUMN_BOOK_NAME, bookNameString);
             values.put(BookContract.BookEntry.COLUMN_BOOK_PRICE, bookPrice);       //Remember, INTEGER
@@ -212,14 +208,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
-    private int getIntegerValue(String stringValue){
-        if(TextUtils.isEmpty(stringValue)){
-            return 0;
-        }
-        return Integer.valueOf(stringValue);
-    }
-
-
     private String checkValidityOfAllValues(String bookNameString, String bookPriceString, String bookQuantityString, String supplierNameString, String supplierPhoneNumberString) {
         //TODO: Make sure you have all error type in the BookError enum
         //TODO: See if you can get an EditText without a decimal point to avoid that problem
@@ -228,11 +216,19 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         //TODO: Change the phone number to number, not phone
         //Solution : android:inputType="number|none"
-
+        Log.i(TAG, "checkValidityOfAllValues: bookNameString: "+bookNameString+", bookPriceString: "+bookPriceString+", bookQuantityString: "+bookQuantityString+", supplierNameString: _"+supplierNameString+"_ , supplierPhoneNumberString: "+supplierPhoneNumberString);
         StringBuilder builder = new StringBuilder();
-        //First check all String Values not null
+        //First check ALL EditText values are not null or empty
         if(TextUtils.isEmpty(bookNameString)){
             builder.append(BookError.BOOK_NAME_REQUIRED.toString()+"\n\n");
+        }
+
+        if(TextUtils.isEmpty(bookPriceString)){
+            builder.append(BookError.BOOK_PRICE_REQUIRED.toString()+"\n\n");
+        }
+
+        if(TextUtils.isEmpty(bookQuantityString)){
+            builder.append(BookError.BOOK_QUANTITY_REQUIRED.toString()+"\n\n");
         }
 
         if(TextUtils.isEmpty(supplierNameString)){
@@ -241,8 +237,12 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         if(TextUtils.isEmpty(supplierPhoneNumberString)){
             builder.append(BookError.SUPPLIER_PHONE_NUMBER_REQUIRED.toString()+"\n\n");
+        } else {
+            // Check phone number length
+            if(supplierPhoneNumberString.length() != 10){
+                builder.append(BookError.SUPPLIER_PHONE_NUMBER_NOT_TEN_DIGITS.toString()+"\n\n");
+            }
         }
-
 
         // Check all numeric values are greater than 0
         if(!TextUtils.isEmpty(bookPriceString)){
@@ -260,12 +260,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 builder.append(BookError.SUPPLIER_PHONE_NUMBER_NEGATIVE_VALUE.toString()+"\n\n");
             }
         }
-
-        // Check phone number length
-        if(supplierPhoneNumberString.length() != 10){
-            builder.append(BookError.SUPPLIER_PHONE_NUMBER_NOT_TEN_DIGITS.toString()+"\n\n");
-        }
-
         return builder.toString();
     }
 
