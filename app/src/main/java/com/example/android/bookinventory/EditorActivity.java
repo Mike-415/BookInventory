@@ -363,44 +363,44 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         StringBuilder builder = new StringBuilder();
         //First, check ALL EditText values are not null or empty
         if(TextUtils.isEmpty(bookNameString)){
-            builder.append(BookError.BOOK_NAME_REQUIRED.toString()+"\n\n");
+            builder.append("\n"+BookError.BOOK_NAME_REQUIRED.toString()+"\n");
         }
 
         if(TextUtils.isEmpty(bookPriceString)){
-            builder.append(BookError.BOOK_PRICE_REQUIRED.toString()+"\n\n");
+            builder.append("\n"+BookError.BOOK_PRICE_REQUIRED.toString()+"\n");
         }
 
         if(TextUtils.isEmpty(bookQuantityString)){
-            builder.append(BookError.BOOK_QUANTITY_REQUIRED.toString()+"\n\n");
+            builder.append("\n"+BookError.BOOK_QUANTITY_REQUIRED.toString()+"\n");
         }
 
         if(TextUtils.isEmpty(supplierNameString)){
-            builder.append(BookError.SUPPLIER_NAME_REQUIRED.toString()+"\n\n");
+            builder.append("\n"+BookError.SUPPLIER_NAME_REQUIRED.toString()+"\n");
         }
 
         if(TextUtils.isEmpty(supplierPhoneNumberString)){
-            builder.append(BookError.SUPPLIER_PHONE_NUMBER_REQUIRED.toString()+"\n\n");
+            builder.append("\n"+BookError.SUPPLIER_PHONE_NUMBER_REQUIRED.toString()+"\n");
         } else {
             // Check phone number length
             if(supplierPhoneNumberString.length() != 10){
-                builder.append(BookError.SUPPLIER_PHONE_NUMBER_NOT_TEN_DIGITS.toString()+"\n\n");
+                builder.append("\n"+BookError.SUPPLIER_PHONE_NUMBER_NOT_TEN_DIGITS.toString()+"\n");
             }
         }
 
         // Check all numeric values are greater than 0
         if(!TextUtils.isEmpty(bookPriceString)){
             if(Integer.valueOf(bookPriceString) < 0){
-                builder.append(BookError.BOOK_PRICE_MINIMUM_ZERO.toString()+"\n\n");
+                builder.append("\n"+BookError.BOOK_PRICE_MINIMUM_ZERO.toString()+"\n");
             }
         }
         if(! TextUtils.isEmpty(bookQuantityString)){
             if(Integer.valueOf(bookQuantityString) < 0){
-                builder.append(BookError.BOOK_QUANTITY_MINIMUM_ZERO.toString()+"\n\n");
+                builder.append("\n"+BookError.BOOK_QUANTITY_MINIMUM_ZERO.toString()+"\n");
             }
         }
         if(! TextUtils.isEmpty(supplierPhoneNumberString)){
             if(Long.valueOf(supplierPhoneNumberString) < 0 ){
-                builder.append(BookError.SUPPLIER_PHONE_NUMBER_NEGATIVE_VALUE.toString()+"\n\n");
+                builder.append("\n"+BookError.SUPPLIER_PHONE_NUMBER_NEGATIVE_VALUE.toString()+"\n");
             }
         }
         return builder.toString();

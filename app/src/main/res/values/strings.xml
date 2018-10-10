@@ -1,22 +1,51 @@
 <resources>
+    <!-- Name for the application and label of CatagoryActivity [CHAR LIMIT=20] -->
     <string name="app_name">Book Inventory</string>
+    <!-- Label for the EditorActivity when updating an existing book [CHAR LIMIT=20] -->
     <string name="editor_activity_title_edit_book">Edit Book</string>
+    <!-- Label for the EditorActivity when inserting a new book [CHAR LIMIT=20] -->
     <string name="editor_activity_title_add_book">Add a Book</string>
 
+    <!-- Label for overflow menu option that deletes all book data in the app [CHAR LIMIT=20] -->
     <string name="action_delete_all_books">Delete All Books</string>
+    <!-- Label for overflow menu option that inserts a dummy book into the database [CHAR LIMIT=20] -->
     <string name="action_insert_dummy_book">Insert Dummy Book</string>
+
+
     <string name="action_save">Save</string>
     <string name="action_delete">Delete</string>
 
+
+    <!-- Toast message in editor when current book was successfully deleted [CHAR LIMIT=NONE] -->
+    <string name="editor_delete_pet_successful">Pet deleted</string>
+    <!-- Toast message in editor when current book has failed to be deleted [CHAR LIMIT=NONE] -->
+    <string name="editor_delete_pet_failed">Error with deleting pet</string>
+
+
+    <!-- Toast message in editor when the quantity increment button is pressed
+         passed the character maximum [CHAR LIMIT=NONE] -->
+    <string name="editor_quantity_too_high">The maximum quantity is 9,999</string>
+    <!-- Toast message in editor when the quantity decrement button is pressed
+         passed the character minimum [CHAR LIMIT=NONE] -->
+    <string name="editor_quantity_too_low">The minimum quantity is 0</string>
 
 
     <!-- Toast message in editor when current book was successfully updated [CHAR LIMIT=NONE] -->
     <string name="editor_update_book_successful">Book updated</string>
     <!-- Toast message in editor when current book has failed to be updated [CHAR LIMIT=NONE] -->
     <string name="editor_update_book_failed">Error with updating book</string>
-    <string name="editor_insert_book_failed">Insert book failed</string>
+    <!-- Toast message in editor when current book was successfully inserted [CHAR LIMIT=NONE] -->
     <string name="editor_insert_book_successful">Insert book successful</string>
+    <!-- Toast message in editor when current book has failed to be inserted [CHAR LIMIT=NONE] -->
+    <string name="editor_insert_book_failed">Insert book failed</string>
 
+
+    <!-- Dialog message to ask the user to confirm deleting the current book [CHAR LIMIT=NONE] -->
+    <string name="delete_dialog_message">Delete this pet?</string>
+    <!-- Dialog button text for the option to confirm deleting the current book [CHAR LIMIT=20] -->
+    <string name="delete">Delete</string>
+    <!-- Dialog button text for the option to cancel deletion of the current book [CHAR LIMIT=20] -->
+    <string name="cancel">Cancel</string>
 
     <!-- Dialog message when user is leaving editor but hasn't saved changes [CHAR LIMIT=NONE] -->
     <string name="unsaved_changes_dialog_message">Discard your changes and quit editing?</string>
@@ -24,17 +53,4 @@
     <string name="discard">Discard</string>
     <!-- Dialog button text for the option to keep editing the current pet [CHAR LIMIT=20] -->
     <string name="keep_editing">Keep Editing</string>
-
-    <!-- Toast message in editor when current book was successfully deleted [CHAR LIMIT=NONE] -->
-    <string name="editor_delete_pet_successful">Pet deleted</string>
-    <!-- Toast message in editor when current book has failed to be deleted [CHAR LIMIT=NONE] -->
-    <string name="editor_delete_pet_failed">Error with deleting pet</string>
-    <!-- Dialog message to ask the user to confirm deleting the current book [CHAR LIMIT=NONE] -->
-    <string name="delete_dialog_message">Delete this pet?</string>
-    <!-- Dialog button text for the option to confirm deleting the current book [CHAR LIMIT=20] -->
-    <string name="delete">Delete</string>
-    <!-- Dialog button text for the option to cancel deletion of the current book [CHAR LIMIT=20] -->
-    <string name="cancel">Cancel</string>
-    <string name="editor_quantity_too_high">The maximum quantity is 9,999</string>
-    <string name="editor_quantity_too_low">The minimum quantity is 0</string>
 </resources>
