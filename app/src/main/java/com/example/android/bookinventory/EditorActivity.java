@@ -76,7 +76,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     /**
-     * A helper method that binds all the ImageButtons to their respective UI element
+     * Binds all the ImageButtons to their respective UI element
      * and sets their onClickListeners
      */
     private void initializeAllImageButtons() {
@@ -132,7 +132,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     /**
-     * A helper method that binds all the EditTexts to their respective UI element
+     * Binds all the EditTexts to their respective UI element
      * and set their onTouchListeners
      */
     private void initializeAllEditText() {

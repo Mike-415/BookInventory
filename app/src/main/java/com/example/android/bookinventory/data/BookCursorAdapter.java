@@ -31,10 +31,10 @@ public class BookCursorAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         mContext = context;
 
-        TextView bookNameTextView = (TextView) view.findViewById(R.id.bookName);
-        TextView bookPriceTextView = (TextView) view.findViewById(R.id.bookPrice);
-        final TextView bookQuantityTextView = (TextView) view.findViewById(R.id.bookQuantity);
-        ImageButton saleButton = (ImageButton) view.findViewById(R.id.sale_button);
+        TextView bookNameTextView = view.findViewById(R.id.bookName);
+        TextView bookPriceTextView = view.findViewById(R.id.bookPrice);
+        final TextView bookQuantityTextView = view.findViewById(R.id.bookQuantity);
+        ImageButton saleButton = view.findViewById(R.id.sale_button);
 
         final int bookId = cursor.getInt(cursor.getColumnIndex(BookEntry._ID));
         String bookName = cursor.getString(cursor.getColumnIndex(BookEntry.COLUMN_BOOK_NAME));

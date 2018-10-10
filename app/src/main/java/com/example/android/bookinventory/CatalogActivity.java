@@ -33,6 +33,16 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
+        initializeFAB();
+        initializeListView();
+        getSupportLoaderManager().initLoader(BOOK_LOADER_ID, null, this);
+    }
+
+    /**
+     * Binds the FloatingActionButton to it's respective UI element
+     * and sets the onClickListener
+     */
+    private void initializeFAB(){
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,6 +51,13 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
                 startActivity(intent);
             }
         });
+    }
+
+    /**
+     * Binds the ListView to it's respective UI element
+     * and sets the onItemClickListener
+     */
+    private void initializeListView(){
         ListView bookListView = findViewById(R.id.listView);
         View emptyView = findViewById(R.id.emptyView);
         bookListView.setEmptyView(emptyView);
@@ -57,7 +74,6 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
                 startActivity(intent);
             }
         });
-        getSupportLoaderManager().initLoader(BOOK_LOADER_ID, null, this);
     }
 
     @Override
