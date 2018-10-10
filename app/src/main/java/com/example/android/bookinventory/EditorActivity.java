@@ -442,8 +442,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int i, @Nullable Bundle bundle) {
-        if(mCurrentBookUri == null)
+        if(mCurrentBookUri == null){
             return null;
+        }
         String[] projection = {
                 BookEntry._ID,
                 BookEntry.COLUMN_BOOK_NAME,
