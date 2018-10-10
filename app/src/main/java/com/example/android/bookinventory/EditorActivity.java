@@ -75,6 +75,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         initializeAllImageButtons();
     }
 
+    /**
+     * A helper method that binds all the ImageButtons to their respective UI element
+     * and sets their onClickListeners
+     */
     private void initializeAllImageButtons() {
         mPhoneButton = findViewById(R.id.phone_button);
         mIncreaseQuantityButton = findViewById(R.id.increase_quantity_button);
@@ -127,6 +131,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         });
     }
 
+    /**
+     * A helper method that binds all the EditTexts to their respective UI element
+     * and set their onTouchListeners
+     */
     private void initializeAllEditText() {
         mBookName = findViewById(R.id.bookName);
         mBookPrice = findViewById(R.id.bookPrice);
@@ -205,6 +213,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Builds and displays a deletion confirmation alert dialog prior to the actual deletion
+     */
     private void showDeleteConfirmationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(EditorActivity.this);
         builder.setMessage(R.string.delete_dialog_message);
@@ -226,6 +237,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         alertDialog.show();
     }
 
+    /**
+     * Deletes the current book if it exist in the database
+     */
     private void deleteBook() {
         // Only perform if the delete if this is an existing pet
         if(mCurrentBookUri != null){
@@ -294,7 +308,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private void saveBook() {
         String bookNameString = mBookName.getText().toString().trim();
         //Remove periods and comma's before dataValidation
-        String bookPriceString = removeAllSymbols(mBookPrice.getText().toString().trim());
+        String bookPriceString = removeNonNumericChars(mBookPrice.getText().toString().trim());
         String bookQuantityString = mBookQuantity.getText().toString().trim();
         String supplierNameString = mSupplierName.getText().toString().trim();
         String supplierPhoneNumberString = mSupplierPhoneNumber.getText().toString().trim();
@@ -334,21 +348,20 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
-    private String removeAllSymbols(String bookPriceString) {
+    /**
+     * Remove all non numeric characters
+     */
+    private String removeNonNumericChars(String bookPriceString) {
         return bookPriceString.replaceAll("[^0-9]", "");
     }
 
+    /**
+     * Checks the validity of all user's input prior to saving into the database
+     */
     private String checkValidityOfAllValues(String bookNameString, String bookPriceString, String bookQuantityString, String supplierNameString, String supplierPhoneNumberString) {
-        //TODO: Make sure you have all error type in the BookError enum
-        //TODO: See if you can get an EditText without a decimal point to avoid that problem
-        //TODO: Max value of quantity is 9999, maxLength = 4
-        //TODO: Max value of price is 999.99, maxLength = 5
 
-        //TODO: Change the phone number to number, not phone
-        //Solution : android:inputType="number|none"
-        Log.i(TAG, "checkValidityOfAllValues: bookNameString: "+bookNameString+", bookPriceString: "+bookPriceString+", bookQuantityString: "+bookQuantityString+", supplierNameString: _"+supplierNameString+"_ , supplierPhoneNumberString: "+supplierPhoneNumberString);
         StringBuilder builder = new StringBuilder();
-        //First check ALL EditText values are not null or empty
+        //First, check ALL EditText values are not null or empty
         if(TextUtils.isEmpty(bookNameString)){
             builder.append(BookError.BOOK_NAME_REQUIRED.toString()+"\n\n");
         }
@@ -393,6 +406,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         return builder.toString();
     }
 
+    /**
+     * Checks if all user's input is null
+     */
     private boolean allEditTextValuesNull(String bookNameString, String bookPriceString, String bookQuantityString, String supplierNameString, String supplierPhoneNumberString) {
         return TextUtils.isEmpty(bookNameString) &&
                 TextUtils.isEmpty(bookPriceString) &&
@@ -402,21 +418,18 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     }
 
 
-
-
-
+    /**
+     * Displays Toasts depending on whether or not the update or insertion
+     * into the database was successful
+     */
     private void toastUpdateOrInsertionResults(ContentValues values) {
         if(mCurrentBookUri == null){
             Uri newUri = getContentResolver().insert(BookEntry.CONTENT_URI, values);
             if (newUri == null){
-                String insertFailed = getString(R.string.editor_insert_book_failed);
-                Log.i(TAG, "toastUpdateOrInsertionResults: book insertion failed. String: "+insertFailed);
-                Toast.makeText(this, insertFailed,
+                Toast.makeText(this, getString(R.string.editor_insert_book_failed),
                         Toast.LENGTH_SHORT).show();
             } else {
-                String insertSuccessful = getString(R.string.editor_insert_book_successful);
-                Log.i(TAG, "toastUpdateOrInsertionResults: book insertion successful String: "+insertSuccessful);
-                Toast.makeText(this, insertSuccessful ,
+                Toast.makeText(this, getString(R.string.editor_insert_book_successful) ,
                         Toast.LENGTH_SHORT).show();
             }
         } else {
@@ -425,17 +438,12 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                     null,
                     null);
             if(rowsAffected == 0){
-                String updateFailed = getString(R.string.editor_update_book_failed);
-                Log.i(TAG, "toastUpdateOrInsertionResults: book update failed.  String: "+updateFailed);
-                Toast.makeText(this, updateFailed ,
+                Toast.makeText(this, getString(R.string.editor_update_book_failed) ,
                         Toast.LENGTH_SHORT).show();
             } else {
-                String updateSuccessful = getString(R.string.editor_update_book_successful);
-                Log.i(TAG, "toastUpdateOrInsertionResults: book update successful. String: "+updateSuccessful);
-                Toast.makeText(this, updateSuccessful ,
+                Toast.makeText(this, getString(R.string.editor_update_book_successful) ,
                         Toast.LENGTH_SHORT).show();
             }
-
         }
     }
 
@@ -471,6 +479,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
+    /**
+     * Sets the text inside all the EditText for updating
+     */
     private void updateAllEditTextWithValues(Cursor cursor) {
         //Get the column index for all columns
         int bookNameColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_NAME);

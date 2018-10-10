@@ -1,5 +1,6 @@
 package com.example.android.bookinventory.data;
 
+/** An enumeration of BookErrors used throughout the code base */
 public enum BookError {
     BOOK_NAME_REQUIRED("Book name is required."),
     BOOK_PRICE_REQUIRED("Book price is required"),

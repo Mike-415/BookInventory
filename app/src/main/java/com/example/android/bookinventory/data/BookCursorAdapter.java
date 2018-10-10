@@ -12,11 +12,8 @@ import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.android.bookinventory.R;
 import com.example.android.bookinventory.data.BookContract.BookEntry;
-
-import java.util.Locale;
 
 public class BookCursorAdapter extends CursorAdapter {
     private Context mContext;

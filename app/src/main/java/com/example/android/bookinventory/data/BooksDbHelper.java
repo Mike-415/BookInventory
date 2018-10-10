@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.example.android.bookinventory.data.BookContract.BookEntry;
 
+/** An API used to access the database through the BookProvider(ContentProvider)*/
 public class BooksDbHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "BooksDbHelper";
@@ -15,9 +16,6 @@ public class BooksDbHelper extends SQLiteOpenHelper {
     public BooksDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-
-    //TODO: Add the thumbnail and ISBN columns
-    //TODO: Add the new columns to the Contract via BookEntry inner class
     @Override
     public void onCreate(SQLiteDatabase db) {
         String SQL_CREATE_BOOKS_TABLE = "CREATE TABLE "+BookEntry.TABLE_NAME+ " ( "

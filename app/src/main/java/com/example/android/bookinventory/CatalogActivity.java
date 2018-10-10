@@ -66,7 +66,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     }
 
     /**
-     * Writes a book into the books database and logs the row id number
+     * Writes a dummy book into the books database and logs the row id number
      */
     public void insertBook(){
         ContentValues values = new ContentValues();
@@ -80,6 +80,9 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
 
     }
 
+    /**
+     * Deletes all books from the books database
+     */
     private void deleteAllBooks(){
         int rowsDeleted = getContentResolver().delete(BookEntry.CONTENT_URI, null, null);
         Log.i(TAG, "deleteAllBooks: rowsDeleted: "+rowsDeleted);

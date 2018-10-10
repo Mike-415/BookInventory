@@ -32,7 +32,7 @@ public class BookProvider extends ContentProvider {
      */
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-    // Static initializer. This is run the first time anything is called from this class.
+    /** Static initializer. This is run the first time anything is called from this class. */
     static {
         sUriMatcher.addURI(BookContract.CONTENT_AUTHORITY, BookContract.PATH_BOOKS, BOOKS);
         sUriMatcher.addURI(BookContract.CONTENT_AUTHORITY, BookContract.PATH_BOOKS+"/#", BOOK_ID);
@@ -187,6 +187,9 @@ public class BookProvider extends ContentProvider {
         }
     }
 
+    /**
+     * A helper method used to validate all values before inserting into the database
+     */
     private void validateAllInsertValues(ContentValues values) {
         String bookName = values.getAsString(BookEntry.COLUMN_BOOK_NAME);
         Integer bookPrice = values.getAsInteger(BookEntry.COLUMN_BOOK_PRICE);
@@ -200,6 +203,9 @@ public class BookProvider extends ContentProvider {
         validatePhoneNumber(supplierPhoneNumber);
     }
 
+    /**
+     * A helper method used to validate all values before updating the database
+     */
     private void validateAllUpdateValues(ContentValues values){
         if(values.containsKey(BookEntry.COLUMN_BOOK_NAME)){
             String bookName = values.getAsString(BookEntry.COLUMN_BOOK_NAME);
@@ -227,16 +233,29 @@ public class BookProvider extends ContentProvider {
     }
 
 
+    /**
+     * A helper method that checks if a string is null.
+     * If true, the method throws an Exception
+     */
     private void validateString(String string, String errorMessage){
-        if(string == null)
+        if(string == null){
             throw new IllegalArgumentException(errorMessage);
+        }
     }
 
+    /**
+     * A helper method that checks if an Integer is negative
+     * If true, the method throws an Exception
+     */
     private void validateInteger(Integer integer, String errorMessage){
         if(integer < 0 && integer != null)
             throw new IllegalArgumentException(errorMessage);
     }
 
+    /**
+     * A helper method that checks if the supplier's phone number validity
+     * If invalid, the method throws an Exception
+     */
     private void validatePhoneNumber(String supplierPhoneNumber) {
         validateString(supplierPhoneNumber, BookError.SUPPLIER_PHONE_NUMBER_REQUIRED.toString());
         if(supplierPhoneNumber.length() != 10)
