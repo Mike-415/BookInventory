@@ -1,7 +1,7 @@
 # Udacity-Project-8-Book-Inventory
 An inventory application that stores book information into a database
 
-![Demo](https://user-images.githubusercontent.com/16497009/47261099-61b43280-d47d-11e8-83a7-6cab7ff1a6b9.gif)
+![](book_inventory_video.gif)
 
 ## Requirements
 
