@@ -75,7 +75,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="8dp"
+                        android:layout_marginLeft="4dp"
                         android:fontFamily="sans-serif-condensed"
                         android:gravity="center"
                         android:textAlignment="center"

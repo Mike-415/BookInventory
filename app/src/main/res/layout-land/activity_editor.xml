@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,13 +11,23 @@
         style="@style/card">
 
         <LinearLayout
-            style="@style/cardLayoutPortrait">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
             <!-- Book EditText -->
             <LinearLayout
-                style="@style/nestedLayoutPortrait">
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="16dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    style="@style/nestedRowLayout">
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -32,7 +42,10 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/nestedRowLayout">
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="0dp"
@@ -51,7 +64,10 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/nestedRowLayout">
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="0dp"
@@ -75,7 +91,10 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/nestedRowLayout">
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="0dp"
@@ -90,6 +109,7 @@
                         android:id="@+id/decrease_quantity_button"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:scaleType="fitCenter"
                         android:layout_gravity="start"
                         android:layout_weight=".66"
                         android:background="@null"
@@ -107,6 +127,7 @@
                         android:id="@+id/increase_quantity_button"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:scaleType="fitCenter"
                         android:layout_gravity="end"
                         android:layout_weight=".66"
                         android:background="@null"
@@ -120,10 +141,17 @@
                 android:background="@color/defaultGrey" />
             <!-- Supplier EditText -->
             <LinearLayout
-                style="@style/nestedLayoutPortrait">
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="16dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    style="@style/nestedRowLayout">
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="0dp"
@@ -139,7 +167,10 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/nestedRowLayout">
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="0dp"
@@ -158,7 +189,10 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/nestedRowLayout">
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="0dp"
@@ -182,17 +216,21 @@
                         android:id="@+id/phone_button"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:scaleType="fitCenter"
                         android:layout_weight=".66"
                         android:background="@null"
                         android:src="@drawable/phone_button" />
                 </LinearLayout>
-                <!--  This empty tag is used to use up space -->
+
                 <LinearLayout
-                    style="@style/nestedRowLayout"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"></LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
 
     </android.support.v7.widget.CardView>
 
-</RelativeLayout>
+</ScrollView>

@@ -9,4 +9,60 @@
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
+    <style name="card" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_margin">@dimen/standard_margin</item>
+    </style>
+
+    <style name="cardLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="cardLayoutPortrait" parent="cardLayout">
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="cardLayoutLandscape" parent="cardLayout">
+        <item name="android:orientation">horizontal</item>
+    </style>
+    <!--
+    android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="16dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+    -->
+    <style name="nestedLayout">
+        <item name="android:layout_margin">@dimen/standard_margin</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="nestedLayoutPortrait" parent="nestedLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="nestedLayoutLandscape" parent="nestedLayout">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <!--
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+    -->
+
+    <style name="nestedRowLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
 </resources>
